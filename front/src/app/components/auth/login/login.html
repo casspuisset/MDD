@@ -1,0 +1,15 @@
+<app-nav-bar></app-nav-bar>
+<div class="login" fxLayout="row" fxLayoutAlign="center center">
+  <button mat-icon-button class="back-btn" routerLink="../home" aria-label="Retour">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <h1>Se connecter</h1>
+  <form class="login-form" [formGroup]="form" (ngSubmit)="submit()">
+    <input placeholder="Email" formControlName="email" />
+    <input placeholder="Password" formControlName="password" />
+    <button color="primary" type="submit" [disabled]="form.invalid">Se connecter</button>
+    @if (onError) {
+    <p class="error">Problème détecté</p>
+    }
+  </form>
+</div>

@@ -1,0 +1,11 @@
+<div class="nav-bar">
+  <p>Logo</p>
+  @if (session.isLogged) {
+  <div>
+    <button (click)="logOut()">Se déconnecter</button>
+    <button (click)="toFeed()">Articles</button>
+    <button (click)="toTopics()">Thèmes</button>
+    <button (click)="toUser()">UserPicture</button>
+  </div>
+  }
+</div>

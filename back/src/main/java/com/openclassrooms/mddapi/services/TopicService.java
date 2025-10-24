@@ -97,6 +97,7 @@ public class TopicService {
         TopicDto topicDto = new TopicDto();
         topicDto.setId(topic.getId());
         topicDto.setName(topic.getName());
+        topicDto.setDescription(topic.getDescription());
         return topicDto;
     }
 

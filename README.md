@@ -11,7 +11,8 @@ USE `MDDDB`;
 
 CREATE TABLE `TOPICS` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `name` VARCHAR(40)
+  `name` VARCHAR(40),
+  `description` VARCHAR(2000)
 );
 
 CREATE TABLE `ARTICLES` (
@@ -56,12 +57,12 @@ ALTER TABLE `SUBSCRIPTION` ADD FOREIGN KEY (`topic_id`) REFERENCES `TOPICS` (`id
 ALTER TABLE `COMMENTS` ADD FOREIGN KEY (`user_id`) REFERENCES `USERS` (`id`);
 ALTER TABLE `COMMENTS` ADD FOREIGN KEY (`article_id`) REFERENCES `ARTICLES` (`id`);
 
-INSERT INTO TOPICS (name)
-VALUES ('JavaScript'),
-       ('Java'),
-       ('Python'),
-       ('Web3'),
-       ('Other');
+INSERT INTO TOPICS (name, description)
+VALUES ('JavaScript', 'Description : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.'),
+       ('Java', 'Description : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.'),
+       ('Python', 'Description : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.'),
+       ('Web3', 'Description : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.'),
+       ('Other', 'Description : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.');
 
 ```
 
