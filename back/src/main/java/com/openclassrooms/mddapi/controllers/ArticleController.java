@@ -1,10 +1,13 @@
 package com.openclassrooms.mddapi.controllers;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,15 +43,23 @@ public class ArticleController {
         return ResponseEntity.ok().body(article);
     }
 
-    @GetMapping("user/{id}")
-    public ResponseEntity<ArticlesDto> getArticlesFromUserTopics(@PathVariable("id") String id) {
-        ArticlesDto articlesResponseDto = articleService.getArticlesFromUsersTopics(Integer.parseInt(id));
+    @GetMapping("/feed")
+    public ResponseEntity<List<ArticleDto>> getArticlesFromUserTopics() {
+        List<ArticleDto> articlesResponseDto = articleService.getArticlesFromUsersTopics();
         return ResponseEntity.ok().body(articlesResponseDto);
     }
 
-    @PostMapping(path = "/new", consumes = "multipart/form-data")
+    // @PostMapping(path = "/new", consumes = "multipart/form-data")
+    // public ResponseEntity<CreateArticleResponseDto> createArticles(
+    // @ModelAttribute CreateArticleRequestDto articleRequestDto) {
+    // CreateArticleResponseDto articleResponseDto =
+    // articleService.createArticle(articleRequestDto);
+    // return ResponseEntity.ok().body(articleResponseDto);
+    // }
+
+    @PostMapping("/new")
     public ResponseEntity<CreateArticleResponseDto> createArticles(
-            @ModelAttribute CreateArticleRequestDto articleRequestDto) {
+            @RequestBody CreateArticleRequestDto articleRequestDto) {
         CreateArticleResponseDto articleResponseDto = articleService.createArticle(articleRequestDto);
         return ResponseEntity.ok().body(articleResponseDto);
     }

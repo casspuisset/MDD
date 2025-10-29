@@ -56,6 +56,7 @@ public class AuthenticationService {
         try {
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(email, password));
+            log.info("authenticated here");
             return authentication;
         } catch (JwtException ex) {
             log.error("Unable to authenticate user");

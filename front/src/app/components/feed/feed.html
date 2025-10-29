@@ -1,3 +1,22 @@
 <app-nav-bar></app-nav-bar>
-<p>feed works!</p>
 <a matButton="filled" routerLink="../article/new"> Créer un article </a>
+<div>
+  <p>Trier par</p>
+  @if (isSorted == false) {
+  <mat-icon (click)="inverseSort()" alt="Du plus ancien au plus récent">arrow_upward</mat-icon>
+  } @else {
+  <mat-icon (click)="noSort()" alt="Du plus récent au plus ancien"> arrow_downward </mat-icon>
+  }
+</div>
+<div>
+  @for (article of articles(); track article.id) {
+  <article routerLink="../article/{{ article.id }}">
+    <h2>{{ article.title }}</h2>
+    <div>
+      <span>{{ article.created_at }}</span>
+      <span>{{ article.creator_username }}</span>
+    </div>
+    <p>{{ article.description }}</p>
+  </article>
+  }
+</div>

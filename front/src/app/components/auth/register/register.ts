@@ -4,12 +4,12 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@
 import { Router, RouterLink } from '@angular/router';
 import { Session } from '../../../services/session/session';
 import { AuthSuccess } from '../../../interfaces/auth/authSuccess.interface';
-import { User } from '../../../interfaces/user.interface';
 import { RegisterRequest } from '../../../interfaces/auth/registerRequest.interface';
-import { NgIf } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { NavBar } from '../../nav-bar/nav-bar';
+import { CustomValidator } from '../../../services/validators/custom-validator';
+import { User } from '../../../interfaces/user/user.interface';
 
 @Component({
   selector: 'app-register',
@@ -23,11 +23,12 @@ export class Register {
   private authService = inject(AuthService);
   private router = inject(Router);
   private session = inject(Session);
+  private customValidator = inject(CustomValidator);
 
   public form = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
     name: ['', [Validators.required, Validators.min(3)]],
-    password: ['', [Validators.required, Validators.min(8), this.customPasswordValidator]],
+    password: ['', [Validators.required, Validators.min(8), this.customValidator.passwordFormat]],
   });
 
   public submit(): void {
@@ -46,14 +47,5 @@ export class Register {
         console.error(error);
       },
     });
-  }
-
-  customPasswordValidator(control: AbstractControl) {
-    let testFormat: boolean =
-      /[0-9]/.test(control.value) &&
-      /[a-z]/.test(control.value) &&
-      /[A-Z]/.test(control.value) &&
-      /[!@#$%^&*(),.?":{}|<>]/.test(control.value);
-    return testFormat ? null : { pattern: true };
   }
 }

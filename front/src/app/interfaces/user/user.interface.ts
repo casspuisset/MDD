@@ -1,4 +1,4 @@
-import { Topic } from './topic.interface';
+import { Topic } from '../topic/topic.interface';
 
 export interface User {
   id: number;

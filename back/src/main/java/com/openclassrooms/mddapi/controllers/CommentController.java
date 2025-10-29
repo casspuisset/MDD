@@ -5,10 +5,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.mddapi.dto.Comments.CommentCreationRequestDto;
 import com.openclassrooms.mddapi.dto.Comments.CommentCreationResponseDto;
+import com.openclassrooms.mddapi.dto.Comments.CommentDto;
 import com.openclassrooms.mddapi.dto.Comments.CommentListDto;
 import com.openclassrooms.mddapi.services.CommentService;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,8 +39,8 @@ public class CommentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CommentListDto> getCommentsFromAnArticle(@PathVariable("id") String id) {
-        CommentListDto commentResponse = commentService.retrieveComments(Integer.parseInt(id));
+    public ResponseEntity<List<CommentDto>> getCommentsFromAnArticle(@PathVariable("id") String id) {
+        List<CommentDto> commentResponse = commentService.retrieveComments(Integer.parseInt(id));
         return ResponseEntity.ok().body(commentResponse);
     }
 

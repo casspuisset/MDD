@@ -1,5 +1,6 @@
 package com.openclassrooms.mddapi.services;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import com.openclassrooms.mddapi.models.Topic;
 import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repository.TopicRepository;
 import com.openclassrooms.mddapi.repository.UserRepository;
+import com.openclassrooms.mddapi.services.Auth.AuthenticationService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,17 +22,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TopicService {
 
+    private final AuthenticationService authenticationService;
     private TopicRepository topicRepository;
     private UserRepository userRepository;
 
-    public TopicService(TopicRepository topicRepository, UserRepository userRepository) {
+    public TopicService(AuthenticationService authenticationService, TopicRepository topicRepository,
+            UserRepository userRepository) {
         this.topicRepository = topicRepository;
         this.userRepository = userRepository;
+        this.authenticationService = authenticationService;
     }
 
     // subscribe to a topic
-    public TopicSubscribingResponseDto subscribeTopic(Integer id, Integer topic_id) {
-        User user = this.userRepository.findById(id).orElse(null);
+    public TopicSubscribingResponseDto subscribeTopic(Integer topic_id) {
+        Integer userId = authenticationService.getAuthenticatedUser().getId();
+
+        User user = this.userRepository.findById(userId).orElse(null);
         Topic topic = this.topicRepository.findById(topic_id).orElse(null);
 
         if (user == null || topic == null) {
@@ -50,8 +57,10 @@ public class TopicService {
     }
 
     // unsubscribe to a topic
-    public TopicSubscribingResponseDto unsubscribeTopic(Integer id, Integer topic_id) {
-        User user = this.userRepository.findById(id).orElse(null);
+    public TopicSubscribingResponseDto unsubscribeTopic(Integer topic_id) {
+        Integer userId = authenticationService.getAuthenticatedUser().getId();
+
+        User user = this.userRepository.findById(userId).orElse(null);
         Topic topic = this.topicRepository.findById(topic_id).orElse(null);
 
         if (user == null || topic == null) {
@@ -71,8 +80,10 @@ public class TopicService {
     }
 
     // get all topics subscribed by a user
-    public TopicListDto retrieveUserTopics(Integer id) {
-        User user = this.userRepository.findById(id).orElse(null);
+    public TopicListDto retrieveUserTopics() {
+        Integer userId = authenticationService.getAuthenticatedUser().getId();
+
+        User user = this.userRepository.findById(userId).orElse(null);
         if (user == null) {
             throw new NotFoundException("User not found");
         }
@@ -84,12 +95,13 @@ public class TopicService {
     }
 
     // get all topics
-    public TopicListDto getAllTopics() {
-        var topicList = new TopicListDto();
+    public List<Topic> getAllTopics() {
+        // var topicList = new TopicListDto();
         var allTopics = topicRepository.findAll();
-        var allTopicsDto = allTopics.stream().map(this::topicToDto).collect(Collectors.toList());
-        topicList.setTopics(allTopicsDto);
-        return topicList;
+        // var allTopicsDto =
+        // allTopics.stream().map(this::topicToDto).collect(Collectors.toList());
+        // topicList.setTopics(allTopicsDto);
+        return allTopics;
     }
 
     // map a topic in a Dto

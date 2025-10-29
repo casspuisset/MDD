@@ -5,11 +5,10 @@ import { Router, RouterLink } from '@angular/router';
 import { Session } from '../../../services/session/session';
 import { AuthSuccess } from '../../../interfaces/auth/authSuccess.interface';
 import { LoginRequest } from '../../../interfaces/auth/loginRequest.interfgace';
-import { User } from '../../../interfaces/user.interface';
 import { MatIcon } from '@angular/material/icon';
-import { NgIf } from '@angular/common';
 import { MatIconButton } from '@angular/material/button';
 import { NavBar } from '../../nav-bar/nav-bar';
+import { User } from '../../../interfaces/user/user.interface';
 
 @Component({
   selector: 'app-login',

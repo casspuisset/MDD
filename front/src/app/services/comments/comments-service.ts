@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CommentRequest } from '../../interfaces/comment.interface';
+import { CommentRequest } from '../../interfaces/comments/commentRequest.interface';
+import { Comment } from '../../interfaces/comments/comment.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,7 @@ export class CommentsService {
     return this.http.post(`${this.pathApi}/${articleId}`, comment);
   }
 
-  public getComments(articleId: number): Observable<any> {
-    return this.http.get<any>(`${this.pathApi}/${articleId}`);
+  public getComments(articleId: number): Observable<Comment[]> {
+    return this.http.get<Comment[]>(`${this.pathApi}/${articleId}`);
   }
 }

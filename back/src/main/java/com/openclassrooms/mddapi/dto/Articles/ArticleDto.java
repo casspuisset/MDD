@@ -14,7 +14,11 @@ public class ArticleDto {
 
     private Integer topicId;
 
+    private String topicName;
+
     private Integer creatorId;
+
+    private String creatorUsername;
 
     private LocalDateTime createdAt;
 

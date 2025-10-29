@@ -3,8 +3,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Session } from './services/session/session';
-import { User } from './interfaces/user.interface';
 import { AuthService } from './services/auth/auth-service';
+import { User } from './interfaces/user/user.interface';
 
 @Component({
   selector: 'app-root',
