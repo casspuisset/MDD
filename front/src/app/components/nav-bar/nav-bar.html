@@ -1,11 +1,21 @@
-<div class="nav-bar">
-  <p>Logo</p>
+<nav class="nav-bar">
+  <img class="logo" src="logo_mdd.png" alt="logo" />
   @if (session.isLogged) {
-  <div>
-    <button (click)="logOut()">Se déconnecter</button>
-    <button (click)="toFeed()">Articles</button>
-    <button (click)="toTopics()">Thèmes</button>
-    <button (click)="toUser()">UserPicture</button>
+  <div class="links-bar">
+    <p class="link disconnect" (click)="logOut()">Se déconnecter</p>
+    <p class="link" (click)="toFeed()">Articles</p>
+    <p class="link" (click)="toTopics()">Thèmes</p>
+    <mat-icon class="link user-icon" (click)="toUser()">person_outline</mat-icon>
   </div>
+  <mat-icon class="mobile-nav-menu" (click)="toOpen()">menu</mat-icon>
+
+  <aside class="mobile-nav" [class.isOpen]="isOpen">
+    <div class="mobile-links-bar">
+      <a class="link disconnect" (click)="logOut()">Se déconnecter</a>
+      <p class="link" (click)="toFeed()">Articles</p>
+      <p class="link" (click)="toTopics()">Thèmes</p>
+    </div>
+    <mat-icon class="link user-icon" (click)="toUser()">person_outline</mat-icon>
+  </aside>
   }
-</div>
+</nav>

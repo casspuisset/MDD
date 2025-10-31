@@ -1,24 +1,30 @@
 <app-nav-bar></app-nav-bar>
-<div class="profile-container">
-  <div class="profile-header">
-    <h1>Profil utilisateur</h1>
-  </div>
-  <form [formGroup]="userProfile">
-    <input type="text" formControlName="username" placeholder="{{ user()?.name }}" />
-    <input type="email" formControlName="email" placeholder="{{ user()?.email }}" />
-    <input type="password" formControlName="password" placeholder="Mot de passe" />
-    <button type="submit" (ngSubmit)="edit()">Sauvegarder</button>
-  </form>
+<div class="dashboard">
+  <section class="profil-section">
+    <h2>Profil utilisateur</h2>
+    <form class="user-form" [formGroup]="userProfile">
+      <input type="text" formControlName="username" placeholder="{{ user()?.name }}" />
+      <input type="email" formControlName="email" placeholder="{{ user()?.email }}" />
+      <input type="password" formControlName="password" placeholder="Mot de passe" />
+      <button class="submit" type="submit" (ngSubmit)="edit()">Sauvegarder</button>
+    </form>
+  </section>
+
   <h2>Abonnements</h2>
-  <div>
-    <div>
-      @if(actif){ @for (topic of user()?.topics; track topic.id) {
-      <div>
+  <section class="topics-section">
+    @for (topic of user()?.topics; track topic.id) {
+    <div [class.isUnsub]="!isSubscribed(topic.id)">
+      <div class="topic-card">
         <h3>{{ topic.name }}</h3>
         <p>{{ topic.description }}</p>
-        <button type="button" (click)="unsubscribe(topic.id)">Se désabonner</button>
+        <div class="unsub-div">
+          <button class="unsubscribing" type="button" (click)="unsubscribe(topic.id)">
+            Se désabonner
+          </button>
+        </div>
       </div>
-      } }
     </div>
-  </div>
+
+    }
+  </section>
 </div>

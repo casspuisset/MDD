@@ -8,10 +8,11 @@ import { Article } from '../../interfaces/articles/article.interface';
 import { Session } from '../../services/session/session';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UsersService } from '../../services/users/users-service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-feed',
-  imports: [NavBar, MatButton, RouterLink, MatIcon],
+  imports: [NavBar, RouterLink, MatIcon, DatePipe],
   templateUrl: './feed.html',
   styleUrl: './feed.scss',
 })
@@ -31,13 +32,8 @@ export class Feed implements OnInit {
     this.loadArticle();
   }
 
-  noSort() {
-    this.isSorted = false;
-    this.loadArticle();
-  }
-
-  inverseSort() {
-    this.isSorted = true;
+  sort() {
+    this.isSorted = !this.isSorted;
     this.loadArticle();
   }
 

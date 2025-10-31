@@ -1,40 +1,50 @@
 <app-nav-bar></app-nav-bar>
-<button mat-icon-button routerLink="../../feed" aria-label="Retour">
-  <mat-icon>arrow_back</mat-icon>
-</button>
-<form [formGroup]="createForm" (ngSubmit)="onSubmit()">
-  <div>
-    <select formControlName="topicId" [class.placeholder]="!createForm.get('topicId')?.value">
-      <option value="" disabled selected>Sélectionnez un thème</option>
-      @for (topic of topics(); track topic.id) {
-      <option [value]="topic.id">{{ topic.name }}</option>
+<div class="create">
+  <form class="create-form" [formGroup]="createForm" (ngSubmit)="onSubmit()">
+    <div class="form-header">
+      <button class="back-btn" mat-icon-button routerLink="../../feed" aria-label="Retour">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1>Créer un nouvel article</h1>
+    </div>
+    <div class="input">
+      <select formControlName="topicId" [class.placeholder]="!createForm.get('topicId')?.value">
+        <option value="" disabled selected>Sélectionnez un thème</option>
+        @for (topic of topics(); track topic.id) {
+        <option [value]="topic.id">{{ topic.name }}</option>
+        }
+      </select>
+      @if (createForm.get('topicId')?.errors?.['required'] && createForm.get('topicId')?.touched) {
+      <div class="error-message">Le thème est requis</div>
       }
-    </select>
-    @if (createForm.get('topicId')?.errors?.['required'] && createForm.get('topicId')?.touched) {
-    <div>Le thème est requis</div>
-    }
-  </div>
+    </div>
 
-  <div>
-    <input type="text" formControlName="title" placeholder="Titre de l'article" required />
-    @if (createForm.get('title')?.errors?.['required'] && createForm.get('title')?.touched) {
-    <div class="error-message">Le titre est requis</div>
-    }
-  </div>
+    <div class="input">
+      <input type="text" formControlName="title" placeholder="Titre de l'article" required />
+      @if (createForm.get('title')?.errors?.['required'] && createForm.get('title')?.touched) {
+      <div class="error-message">Le titre est requis</div>
+      }
+    </div>
 
-  <div>
-    <textarea formControlName="description" placeholder="Contenu de l'article"></textarea>
-    @if (createForm.get('description')?.errors?.['required'] && createForm.get('content')?.touched)
-    {
-    <div>Le contenu est requis</div>
-    }
-  </div>
+    <div class="input">
+      <textarea
+        formControlName="description"
+        placeholder="Contenu de l'article"
+        required
+      ></textarea>
+      @if (createForm.get('description')?.errors?.['required'] &&
+      createForm.get('content')?.touched) {
+      <div>Le contenu est requis</div>
+      }
+    </div>
 
-  <button
-    type="submit"
-    [disabled]="createForm.invalid"
-    [title]="createForm.invalid ? 'Formulaire invalide' : 'Créer un article'"
-  >
-    Créer
-  </button>
-</form>
+    <button
+      class="submit"
+      type="submit"
+      [disabled]="createForm.invalid"
+      [title]="createForm.invalid ? 'Formulaire invalide' : 'Créer un article'"
+    >
+      Créer
+    </button>
+  </form>
+</div>

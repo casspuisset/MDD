@@ -3,13 +3,28 @@
   <button mat-icon-button class="back-btn" routerLink="../home" aria-label="Retour">
     <mat-icon>arrow_back</mat-icon>
   </button>
+  <img class="logo" src="logo_mdd.png" alt="logo" />
   <h1>Se connecter</h1>
   <form class="login-form" [formGroup]="form" (ngSubmit)="submit()">
-    <input placeholder="Email" formControlName="email" />
-    <input placeholder="Password" formControlName="password" />
-    <button color="primary" type="submit" [disabled]="form.invalid">Se connecter</button>
-    @if (onError) {
-    <p class="error">Problème détecté</p>
-    }
+    <div class="input-div">
+      <label for="email">Email ou nom d'utilisateur</label>
+      <input type="email" formControlName="email" required />
+      @if (form.get('email')?.errors?.['required'] && form.get('email')?.touched) {
+      <span class="error-message">Email requis</span>
+      }
+    </div>
+    <div class="input-div">
+      <label for="password">Mot de passe</label>
+      <input type="text" formControlName="password" required />
+      @if (form.get('password')?.errors?.['required'] && form.get('password')?.touched) {
+      <span class="error-message">Mot de passe requis</span>
+      }
+    </div>
+    <div class="submit-div">
+      <button class="submit" type="submit" [disabled]="form.invalid">Se connecter</button>
+      @if (onError) {
+      <span class="error-message">Problème lors de l'authentification</span>
+      }
+    </div>
   </form>
 </div>

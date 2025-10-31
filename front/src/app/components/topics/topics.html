@@ -1,10 +1,20 @@
 <app-nav-bar></app-nav-bar>
-<div>
+<div class="topics">
   @for (topic of topics(); track topic.id) {
-  <h3>{{ topic.name }}</h3>
-  <p>Description: {{ topic.description }}</p>
-  <button type="button" [disabled]="isSubscribed(topic.id)" (click)="subscribe(topic.id)">
-    {{ isSubscribed(topic.id) ? 'Déjà abonné' : "S'abonner" }}
-  </button>
+  <div class="topic-card">
+    <h3 class="topic-name">{{ topic.name }}</h3>
+    <p>Description: {{ topic.description }}</p>
+    <div class="sub-div">
+      <button
+        type="button"
+        class="subscribing"
+        [disabled]="isSubscribed(topic.id)"
+        (click)="subscribe(topic.id)"
+      >
+        {{ isSubscribed(topic.id) ? 'Déjà abonné' : "S'abonner" }}
+      </button>
+    </div>
+  </div>
+
   }
 </div>

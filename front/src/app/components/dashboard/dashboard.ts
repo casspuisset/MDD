@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, inject, OnInit } from '@angular/core';
+import { AfterContentInit, Component, inject, OnInit, signal } from '@angular/core';
 import { NavBar } from '../nav-bar/nav-bar';
 import { UsersService } from '../../services/users/users-service';
 import { Session } from '../../services/session/session';
@@ -21,12 +21,13 @@ export class Dashboard {
   public topicsService = inject(TopicsService);
   public formBuilder = inject(FormBuilder);
   private router = inject(Router);
-  public actif: boolean = true;
   // private customValidator = inject(CustomValidator);
 
   public user = toSignal(this.userService.getById(this.sessionService.user!.id.toString()), {
     initialValue: null,
   });
+
+  public subcribedTopics = signal<string[]>([]);
 
   userProfile = this.formBuilder.group({
     username: [''],
@@ -44,14 +45,22 @@ export class Dashboard {
     });
   }
 
-  public unsubscribe(topic_id: number): void {
-    this.topicsService.topicUnsubscribe(topic_id).subscribe({
+  public unsubscribe(topicId: number): void {
+    this.topicsService.topicUnsubscribe(topicId).subscribe({
       next: () => {
+        const user = this.user();
+        if (user !== null && user.topics !== undefined) {
+          user.topics = user.topics.filter((topic) => topic.id !== topicId);
+        }
         this.router.navigate(['/topics']);
       },
       error: () => {
         console.error('An error occured when unsubscribing');
       },
     });
+  }
+
+  isSubscribed(topicId: number): boolean {
+    return !!this.user()?.topics?.some((topic) => topic.id === topicId);
   }
 }

@@ -5,11 +5,31 @@
   </button>
   <h1>S'enregistrer</h1>
   <form class="register-form" [formGroup]="form" (ngSubmit)="submit()">
-    <input placeholder="Name" formControlName="name" />
-    <input placeholder="Email" formControlName="email" />
-    <input placeholder="Password" formControlName="password" />
-    <button color="primary" type="submit" [disabled]="form.invalid">Submit</button>
-    @if (onError) { <span class="error">An error occurred</span>
-    }
+    <div class="input-div">
+      <label for="name">Nom d'utilisateur</label>
+      <input type="text" formControlName="name" required />
+      @if (form.get('name')?.errors?.['required'] && form.get('name')?.touched) {
+      <span class="error-message">Nom requis</span>
+      }
+    </div>
+    <div class="input-div">
+      <label for="email">Adresse e-mail</label>
+      <input type="email" formControlName="email" required />
+      @if (form.get('email')?.errors?.['required'] && form.get('email')?.touched) {
+      <span class="error-message">Email requis</span>
+      }
+    </div>
+    <div class="input-div">
+      <label for="password">Mot de passe</label>
+      <input type="text" formControlName="password" required />
+      @if (form.get('password')?.errors?.['required'] && form.get('password')?.touched) {
+      <span class="error-message">Mot de passe requis</span>
+      }
+    </div>
+    <div class="submit-div">
+      <button class="submit" type="submit" [disabled]="form.invalid">Submit</button>
+      @if (onError) { <span class="error">An error occurred</span>
+      }
+    </div>
   </form>
 </div>

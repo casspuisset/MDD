@@ -1,41 +1,48 @@
 <app-nav-bar></app-nav-bar>
-<div>
-  <div>
-    <button mat-icon-button routerLink="../../feed" aria-label="Retour">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    <h1>{{ article()?.title }}</h1>
-  </div>
-
-  <div>
-    <div>
-      <p>{{ article()?.createdAt }}</p>
-      <p>{{ article()?.creatorUsername }}</p>
-      <p>{{ article()?.topicName }}</p>
-      <p>{{ article()?.description }}</p>
+<div class="detail">
+  <section class="details-section">
+    <div class="detail-header">
+      <button class="back-btn" mat-icon-button routerLink="../../feed" aria-label="Retour">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1>{{ article()?.title }}</h1>
     </div>
 
-    <section>
-      <p>Commentaires</p>
+    <div class="article-datas">
+      <p>{{ article()?.createdAt | date }}</p>
+      <p>{{ article()?.creatorUsername }}</p>
+      <p>{{ article()?.topicName }}</p>
+    </div>
 
-      <div>
-        @for (comment of comments(); track comment.id) {
+    <p>{{ article()?.description }}</p>
+  </section>
+
+  <section class="comment-section">
+    <p>Commentaires</p>
+
+    <div class="comment-list">
+      @for (comment of comments(); track comment.id) {
+      <div class="comment-card">
         <div>
-          <div>
-            {{ comment.userName }}
-          </div>
-          <div>
-            <p>{{ comment.content }}</p>
-          </div>
+          {{ comment.userName }}
         </div>
-        }
+        <div class="comment-content">
+          <p>{{ comment.content }}</p>
+        </div>
       </div>
-      <form [formGroup]="commentForm" (ngSubmit)="sendMessage()" class="comment-form">
-        <div>
-          <textarea formControlName="comment" placeholder="Écrivez votre commentaire"></textarea>
-          <button type="submit" [disabled]="commentForm.invalid">Envoyer</button>
-        </div>
+      }
+    </div>
+    <div class="new-comment-div">
+      <form class="comment-form" [formGroup]="commentForm" (ngSubmit)="sendMessage()">
+        <textarea
+          class="new-comment"
+          formControlName="comment"
+          placeholder="Écrivez ici votre commentaire"
+        ></textarea>
+        <button class="send" type="submit" [disabled]="commentForm.invalid">
+          <mat-icon>send</mat-icon>
+        </button>
       </form>
-    </section>
-  </div>
+    </div>
+  </section>
 </div>

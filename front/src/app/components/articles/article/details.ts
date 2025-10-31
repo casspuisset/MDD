@@ -10,10 +10,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-article',
-  imports: [NavBar, MatIcon, ReactiveFormsModule, RouterLink, MatIconButton],
+  imports: [NavBar, MatIcon, ReactiveFormsModule, RouterLink, MatIconButton, DatePipe],
   templateUrl: './details.html',
   styleUrl: './details.scss',
 })
