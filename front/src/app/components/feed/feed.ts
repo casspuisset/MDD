@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { NavBar } from '../nav-bar/nav-bar';
 import { MatButton } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
@@ -28,18 +28,47 @@ export class Feed implements OnInit {
 
   articles = signal<Article[]>([]);
 
+  //fetch articles on intitialisation of the component
   ngOnInit(): void {
     this.loadArticle();
   }
 
+  //change the order from the feed
   sort() {
     this.isSorted = !this.isSorted;
     this.loadArticle();
   }
 
+  //Get articles from the user's feed
   loadArticle() {
     this.articleService.getArticlesFromFeed().subscribe((articlesArray: Article[]) => {
-      this.articles.set(this.isSorted ? articlesArray.reverse() : articlesArray);
+      this.articles.set(
+        this.isSorted
+          ? articlesArray.sort(this.verifyArrayOrder)
+          : articlesArray.sort(this.verifyInverseOrder)
+      );
     });
+  }
+
+  //reorder the feed from the oldest to the newest article
+  verifyArrayOrder(a: Article, b: Article) {
+    if (a.createdAt.toString() < b.createdAt.toString()) {
+      return -1;
+    }
+    if (a.createdAt.toString() > b.createdAt.toString()) {
+      return 1;
+    }
+    return 0;
+  }
+
+  //reorder the feed from the last to the oldest article
+  verifyInverseOrder(a: Article, b: Article) {
+    if (a.createdAt.toString() < b.createdAt.toString()) {
+      return 1;
+    }
+    if (a.createdAt.toString() > b.createdAt.toString()) {
+      return -1;
+    }
+    return 0;
   }
 }

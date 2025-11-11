@@ -9,12 +9,15 @@
     </div>
 
     <div class="article-datas">
-      <p>{{ article()?.createdAt | date }}</p>
-      <p>{{ article()?.creatorUsername }}</p>
+      <div class="first-row">
+        <p>{{ article()?.createdAt | date }}</p>
+        <p>{{ article()?.creatorUsername }}</p>
+      </div>
+
       <p>{{ article()?.topicName }}</p>
     </div>
 
-    <p>{{ article()?.description }}</p>
+    <p class="article-description">{{ article()?.description }}</p>
   </section>
 
   <section class="comment-section">

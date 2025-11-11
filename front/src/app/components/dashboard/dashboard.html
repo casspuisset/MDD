@@ -2,11 +2,11 @@
 <div class="dashboard">
   <section class="profil-section">
     <h2>Profil utilisateur</h2>
-    <form class="user-form" [formGroup]="userProfile">
+    <form class="user-form" [formGroup]="userProfile" (ngSubmit)="edit()">
       <input type="text" formControlName="username" placeholder="{{ user()?.name }}" />
       <input type="email" formControlName="email" placeholder="{{ user()?.email }}" />
       <input type="password" formControlName="password" placeholder="Mot de passe" />
-      <button class="submit" type="submit" (ngSubmit)="edit()">Sauvegarder</button>
+      <button class="submit" type="submit">Sauvegarder</button>
     </form>
   </section>
 

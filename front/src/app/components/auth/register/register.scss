@@ -45,6 +45,7 @@ input {
 
 .submit:disabled {
   cursor: default;
+  background-color: var(--secondary-color);
 }
 
 .logo {

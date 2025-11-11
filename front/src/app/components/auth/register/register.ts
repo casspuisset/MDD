@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../../services/auth/auth-service';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -31,6 +31,8 @@ export class Register {
     password: ['', [Validators.required, Validators.min(8), this.customValidator.passwordFormat]],
   });
 
+  public registerErrors = signal<string>('');
+  //create a new user account when form is valid, and connect them with a new token
   public submit(): void {
     const registerRequest = this.form.value as RegisterRequest;
     this.authService.register(registerRequest).subscribe({
@@ -43,9 +45,17 @@ export class Register {
         this.router.navigate(['/feed']);
       },
       error: (error) => {
-        this.onError = true;
+        this.registerErrors.set(error.error);
         console.error(error);
       },
     });
+  }
+
+  isError() {
+    if (this.registerErrors().includes("l'utilisateur existe déjà")) {
+      return true;
+    }
+
+    return false;
   }
 }

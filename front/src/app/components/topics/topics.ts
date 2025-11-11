@@ -23,6 +23,7 @@ export class Topics {
   });
   public subcribedTopics = signal<string[]>([]);
 
+  //get all topics
   subscribe(topicId: number) {
     this.topicService.topicSubscribe(topicId).subscribe({
       next: () => {
@@ -32,6 +33,7 @@ export class Topics {
     });
   }
 
+  //verify for each topic if the user is subscribed to it
   isSubscribed(topicId: number): boolean {
     if (this.subcribedTopics().includes(topicId.toString())) {
       return true;

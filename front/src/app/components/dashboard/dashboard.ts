@@ -5,7 +5,6 @@ import { Session } from '../../services/session/session';
 import { TopicsService } from '../../services/topics/topics-service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserEditRequest } from '../../interfaces/user/user.edit.interface';
-import { CustomValidator } from '../../services/validators/custom-validator';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
@@ -21,7 +20,6 @@ export class Dashboard {
   public topicsService = inject(TopicsService);
   public formBuilder = inject(FormBuilder);
   private router = inject(Router);
-  // private customValidator = inject(CustomValidator);
 
   public user = toSignal(this.userService.getById(this.sessionService.user!.id.toString()), {
     initialValue: null,
@@ -35,6 +33,7 @@ export class Dashboard {
     password: [''],
   });
 
+  //edit user account
   public edit(): void {
     const editRequest = this.userProfile.value as UserEditRequest;
     this.userService.edit(editRequest).subscribe({
@@ -45,6 +44,7 @@ export class Dashboard {
     });
   }
 
+  //unsubscribe to a topic
   public unsubscribe(topicId: number): void {
     this.topicsService.topicUnsubscribe(topicId).subscribe({
       next: () => {
@@ -60,6 +60,7 @@ export class Dashboard {
     });
   }
 
+  //check if user is subscribed to a topic
   isSubscribed(topicId: number): boolean {
     return !!this.user()?.topics?.some((topic) => topic.id === topicId);
   }

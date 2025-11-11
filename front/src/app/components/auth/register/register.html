@@ -28,8 +28,7 @@
     </div>
     <div class="submit-div">
       <button class="submit" type="submit" [disabled]="form.invalid">Submit</button>
-      @if (onError) { <span class="error">An error occurred</span>
-      }
+      <span class="error-message"> {{ isError() ? "L'utilisateur existe déjà" : '' }} </span>
     </div>
   </form>
 </div>

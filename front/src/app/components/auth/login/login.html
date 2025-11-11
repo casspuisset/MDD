@@ -22,9 +22,9 @@
     </div>
     <div class="submit-div">
       <button class="submit" type="submit" [disabled]="form.invalid">Se connecter</button>
-      @if (onError) {
-      <span class="error-message">Problème lors de l'authentification</span>
-      }
+      <span class="error-message">{{
+        isError() ? 'identifiants ou mot de passe incorrect' : ''
+      }}</span>
     </div>
   </form>
 </div>

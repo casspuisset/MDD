@@ -10,6 +10,8 @@ import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 
 import com.openclassrooms.mddapi.dto.Users.UserDetailsDto;
+import com.openclassrooms.mddapi.exceptions.UnauthorizedException;
+import com.openclassrooms.mddapi.mapper.UserMapper;
 import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repository.UserRepository;
 
@@ -19,13 +21,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthenticationService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
+    private final UserMapper userMapper;
 
-    public AuthenticationService(UserRepository userRepository, AuthenticationManager authenticationManager) {
+    public AuthenticationService(UserMapper userMapper, UserRepository userRepository,
+            AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
-
+        this.userMapper = userMapper;
     }
 
     // get user from the context
@@ -46,7 +50,7 @@ public class AuthenticationService {
         return getAuthenticatedUserFromContext()
                 .map(this::mapTo)
                 .orElseThrow(() -> {
-                    throw null;
+                    throw new UnauthorizedException("user is not authenticated");
                 });
 
     }
@@ -56,23 +60,15 @@ public class AuthenticationService {
         try {
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            log.info("authenticated here");
             return authentication;
         } catch (JwtException ex) {
-            log.error("Unable to authenticate user");
-            return null;
+            throw new UnauthorizedException("user is not authenticated");
         }
     }
 
     // Map a User in a Dto
     private UserDetailsDto mapTo(User user) {
-        var userDetailsDto = new UserDetailsDto();
-        userDetailsDto.setName(user.getName());
-        userDetailsDto.setEmail(user.getEmail());
-        userDetailsDto.setId(user.getId());
-        userDetailsDto.setTopics(user.getTopics());
-        userDetailsDto.setCreated_at(user.getCreatedAt());
-        userDetailsDto.setUpdated_at(user.getUpdatedAt());
+        UserDetailsDto userDetailsDto = userMapper.mapToDto(user);
         return userDetailsDto;
     }
 

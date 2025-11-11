@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import com.openclassrooms.mddapi.dto.Comments.CommentCreationRequestDto;
 import com.openclassrooms.mddapi.dto.Comments.CommentCreationResponseDto;
 import com.openclassrooms.mddapi.dto.Comments.CommentDto;
-import com.openclassrooms.mddapi.dto.Comments.CommentListDto;
 import com.openclassrooms.mddapi.exceptions.NotFoundException;
+import com.openclassrooms.mddapi.mapper.CommentMapper;
 import com.openclassrooms.mddapi.models.Comment;
 import com.openclassrooms.mddapi.repository.ArticleRepository;
 import com.openclassrooms.mddapi.repository.CommentRepository;
@@ -23,18 +23,21 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CommentService {
 
-    private ArticleRepository articleRepository;
-    private CommentRepository commentRepository;
-    private UserRepository userRepository;
+    private final ArticleRepository articleRepository;
+    private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
     private final AuthenticationService authenticationService;
+    private final CommentMapper commentMapper;
 
-    public CommentService(UserRepository userRepository, ArticleRepository articleRepository,
+    public CommentService(CommentMapper commentMapper, UserRepository userRepository,
+            ArticleRepository articleRepository,
             CommentRepository commentRepository,
             AuthenticationService authenticationService) {
         this.articleRepository = articleRepository;
         this.authenticationService = authenticationService;
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
+        this.commentMapper = commentMapper;
     }
 
     // create a new comment
@@ -59,6 +62,7 @@ public class CommentService {
         return commentResponse;
     }
 
+    // get all comments from an article
     public List<CommentDto> retrieveComments(Integer id) {
         var article = articleRepository.findById(id).orElse(null);
 
@@ -72,19 +76,8 @@ public class CommentService {
 
     // map a comment in a Dto
     private CommentDto commentToDto(Comment comment) {
-        CommentDto commentDto = new CommentDto();
         var user = userRepository.findById(comment.getUserId()).orElse(null);
-        commentDto.setId(comment.getId());
-        commentDto.setArticleId(comment.getArticleId());
-        if (user != null) {
-            commentDto.setUserName(user.getName());
-        } else {
-            commentDto.setUserName("this account does not exist");
-        }
-        commentDto.setContent(comment.getContent());
-        commentDto.setUserId(comment.getUserId());
-        commentDto.setCreatedAt(comment.getCreatedAt());
-        commentDto.setUpdatedAt(comment.getUpdatedAt());
+        CommentDto commentDto = commentMapper.mapToDto(user, comment);
         return commentDto;
     }
 

@@ -28,6 +28,7 @@ export class Create {
     topicId: ['', [Validators.required]],
   });
 
+  //create a new article from the form
   onSubmit() {
     if (
       this.createForm.valid &&

@@ -10,6 +10,7 @@ import com.openclassrooms.mddapi.dto.Topics.TopicListDto;
 import com.openclassrooms.mddapi.dto.Topics.TopicSubscribingResponseDto;
 import com.openclassrooms.mddapi.exceptions.BadRequestException;
 import com.openclassrooms.mddapi.exceptions.NotFoundException;
+import com.openclassrooms.mddapi.mapper.TopicMapper;
 import com.openclassrooms.mddapi.models.Topic;
 import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repository.TopicRepository;
@@ -23,14 +24,17 @@ import lombok.extern.slf4j.Slf4j;
 public class TopicService {
 
     private final AuthenticationService authenticationService;
-    private TopicRepository topicRepository;
-    private UserRepository userRepository;
+    private final TopicRepository topicRepository;
+    private final UserRepository userRepository;
+    private final TopicMapper topicMapper;
 
-    public TopicService(AuthenticationService authenticationService, TopicRepository topicRepository,
+    public TopicService(TopicMapper topicMapper, AuthenticationService authenticationService,
+            TopicRepository topicRepository,
             UserRepository userRepository) {
         this.topicRepository = topicRepository;
         this.userRepository = userRepository;
         this.authenticationService = authenticationService;
+        this.topicMapper = topicMapper;
     }
 
     // subscribe to a topic
@@ -96,20 +100,13 @@ public class TopicService {
 
     // get all topics
     public List<Topic> getAllTopics() {
-        // var topicList = new TopicListDto();
         var allTopics = topicRepository.findAll();
-        // var allTopicsDto =
-        // allTopics.stream().map(this::topicToDto).collect(Collectors.toList());
-        // topicList.setTopics(allTopicsDto);
         return allTopics;
     }
 
     // map a topic in a Dto
     private TopicDto topicToDto(Topic topic) {
-        TopicDto topicDto = new TopicDto();
-        topicDto.setId(topic.getId());
-        topicDto.setName(topic.getName());
-        topicDto.setDescription(topic.getDescription());
+        TopicDto topicDto = topicMapper.mapToDto(topic);
         return topicDto;
     }
 

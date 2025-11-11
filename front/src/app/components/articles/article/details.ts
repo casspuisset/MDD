@@ -7,7 +7,6 @@ import { CommentResponse } from '../../../interfaces/comments/commentResponse.in
 import { CommentsService } from '../../../services/comments/comments-service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { of } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { DatePipe } from '@angular/common';
@@ -36,6 +35,7 @@ export class Details {
     comment: ['', [Validators.required, Validators.min(10)]],
   });
 
+  //send a new comment
   public sendMessage(): void {
     if (this.commentForm.value.comment) {
       let newRequest: CommentRequest = {

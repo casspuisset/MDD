@@ -11,6 +11,7 @@ import com.openclassrooms.mddapi.dto.Auth.AuthResponseDto;
 import com.openclassrooms.mddapi.dto.Auth.LoginRequestDto;
 import com.openclassrooms.mddapi.dto.Auth.RegisterRequestDto;
 import com.openclassrooms.mddapi.exceptions.UnauthorizedException;
+import com.openclassrooms.mddapi.exceptions.UserAlreadyExistsException;
 import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repository.UserRepository;
 
@@ -36,7 +37,13 @@ public class LoginService {
     // log an user if the email and the password are correct
     public AuthResponseDto login(final LoginRequestDto loginRequestDto) {
         try {
-            Authentication authentication = authenticationService.tryAuthenticateUser(loginRequestDto.getEmail(),
+            String email = "";
+            if (loginRequestDto.getEmail().contains("@")) {
+                email = loginRequestDto.getEmail();
+            } else {
+                email = userRepository.findByName(loginRequestDto.getEmail()).get().getEmail();
+            }
+            Authentication authentication = authenticationService.tryAuthenticateUser(email,
                     loginRequestDto.getPassword());
             log.info(authentication.getName());
             String token = jwtService.generateToken(authentication);
@@ -54,7 +61,7 @@ public class LoginService {
         if (optionnalUser.isPresent()) {
 
             log.warn("User already exists");
-            return null;
+            throw new UserAlreadyExistsException("l'utilisateur existe déjà");
 
         } else {
             String passwordEncoded = passwordEncoder.encode(registerRequestDto.getPassword());

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../../services/auth/auth-service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -24,10 +24,12 @@ export class Login {
   private router = inject(Router);
   private session = inject(Session);
   public form = this.formBuilder.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.min(3)]],
     password: ['', [Validators.required, Validators.min(3)]],
   });
+  public loginErrors = signal<string>('');
 
+  //on login, create a token and set it on localStorage
   public submit(): void {
     const loginRequest = this.form.value as LoginRequest;
     this.authService.login(loginRequest).subscribe({
@@ -40,9 +42,16 @@ export class Login {
         this.router.navigate(['/feed']);
       },
       error: (error) => {
-        this.onError = true;
+        this.loginErrors.update(() => 'error');
         console.error(error);
       },
     });
+  }
+
+  isError() {
+    if (this.loginErrors().includes('error')) {
+      return true;
+    }
+    return false;
   }
 }

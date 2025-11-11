@@ -3,7 +3,6 @@ package com.openclassrooms.mddapi.services;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -14,6 +13,7 @@ import com.openclassrooms.mddapi.dto.Articles.ArticlesDto;
 import com.openclassrooms.mddapi.dto.Articles.CreateArticleRequestDto;
 import com.openclassrooms.mddapi.dto.Articles.CreateArticleResponseDto;
 import com.openclassrooms.mddapi.exceptions.NotFoundException;
+import com.openclassrooms.mddapi.mapper.ArticleMapper;
 import com.openclassrooms.mddapi.models.Article;
 import com.openclassrooms.mddapi.models.Topic;
 import com.openclassrooms.mddapi.models.User;
@@ -32,14 +32,16 @@ public class ArticleService {
     private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
     private final TopicRepository topicRepository;
+    private final ArticleMapper articleMapper;
 
     public ArticleService(TopicRepository topicRepository, UserRepository userRepository,
             ArticleRepository articleRepository,
-            AuthenticationService authenticationService) {
+            AuthenticationService authenticationService, ArticleMapper articleMapper) {
         this.articleRepository = articleRepository;
         this.authenticationService = authenticationService;
         this.userRepository = userRepository;
         this.topicRepository = topicRepository;
+        this.articleMapper = articleMapper;
     }
 
     // get all articles
@@ -82,31 +84,6 @@ public class ArticleService {
         return articlesList;
     }
 
-    // // // get articles with topics subscribed by the user
-    // public ArticlesDto getArticlesFromUsersTopics() {
-    // Integer id = authenticationService.getAuthenticatedUser().getId();
-    // User user = this.userRepository.findById(id).orElse(null);
-    // if (user == null) {
-    // throw new NotFoundException("User not found");
-    // }
-    // ArticlesDto articles = new ArticlesDto();
-    // List<ArticleDto> articlesList = new ArrayList<>();
-
-    // List<Topic> usersTopicsList = user.getTopics();
-    // for (Topic topic : usersTopicsList) {
-    // Integer topicId = topic.getId();
-    // List<ArticleDto> thesesArticles =
-    // articleRepository.findByTopicId(topicId).stream()
-    // .map(this::articleToDto)
-    // .collect(Collectors.toList());
-    // articlesList = Stream.concat(articlesList.stream(),
-    // thesesArticles.stream()).collect(Collectors.toList());
-    // }
-
-    // articles.setArticles(articlesList);
-    // return articles;
-    // }
-
     // create a new article
     public CreateArticleResponseDto createArticle(CreateArticleRequestDto request) {
         Article newArticle = new Article();
@@ -128,26 +105,10 @@ public class ArticleService {
 
     // map an article in a Dto
     private ArticleDto articleToDto(Article article) {
-        ArticleDto articleDto = new ArticleDto();
         var user = userRepository.findById(article.getCreatorId()).orElse(null);
         var topic = topicRepository.findById(article.getTopicId()).orElse(null);
-        articleDto.setId(article.getId());
-        articleDto.setTitle(article.getTitle());
-        articleDto.setDescription(article.getDescription());
-        articleDto.setTopicId(article.getTopicId());
-        if (topic != null) {
-            articleDto.setTopicName(topic.getName());
-        } else {
-            articleDto.setTopicName("this topic does not exist");
-        }
-        articleDto.setCreatorId(article.getCreatorId());
-        if (user != null) {
-            articleDto.setCreatorUsername(user.getName());
-        } else {
-            articleDto.setCreatorUsername("this account does not exist");
-        }
-        articleDto.setCreatedAt(article.getCreatedAt());
-        articleDto.setUpdatedAt(article.getUpdatedAt());
+        ArticleDto articleDto = articleMapper.mapToDto(article, user, topic);
+
         return articleDto;
     }
 }
