@@ -1,23 +1,30 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ArticlesResponse } from '../../interfaces/api/articlesResponse.interface';
+import { Article } from '../../interfaces/articles/article.interface';
+import { ArticlesResponse } from '../../interfaces/articles/articlesResponse.interface';
+import { createArticle } from '../../interfaces/articles/createArticle.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ArticlesService {
-  public rentalForm: FormGroup | undefined;
-
   private pathApi = 'api/articles';
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
-  public all(): Observable<ArticlesResponse> {
+  public getAllArticles(): Observable<ArticlesResponse> {
     return this.http.get<any>(this.pathApi);
   }
 
-  public createArticle(form: FormData): Observable<any> {
-    return this.http.post(this.pathApi, form);
+  public createArticle(createRequest: createArticle): Observable<any> {
+    return this.http.post(`${this.pathApi}/new`, createRequest);
+  }
+
+  public getArticleById(articleId: number): Observable<Article> {
+    return this.http.get<Article>(`${this.pathApi}/${articleId}`);
+  }
+
+  public getArticlesFromFeed(): Observable<Article[]> {
+    return this.http.get<Article[]>(`${this.pathApi}/feed`);
   }
 }

@@ -1,0 +1,24 @@
+<app-nav-bar></app-nav-bar>
+<div class="top-page">
+  <button class="create-button" routerLink="../article/new">Créer un article</button>
+  <p class="sort" (click)="sort()">
+    Trier par @if (isSorted == false) {
+    <mat-icon alt="Du plus ancien au plus récent">arrow_upward</mat-icon>
+    } @else {
+    <mat-icon alt="Du plus récent au plus ancien"> arrow_downward </mat-icon>
+    }
+  </p>
+</div>
+
+<div class="articles">
+  @for (article of articles(); track article.id) {
+  <article class="article-card" routerLink="../article/{{ article.id }}">
+    <h2>{{ article.title }}</h2>
+    <div class="card-top">
+      <span>{{ article.createdAt | date }}</span>
+      <span>{{ article.creatorUsername }}</span>
+    </div>
+    <p>{{ article.description }}</p>
+  </article>
+  }
+</div>

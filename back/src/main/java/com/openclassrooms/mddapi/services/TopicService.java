@@ -1,5 +1,6 @@
 package com.openclassrooms.mddapi.services;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -9,10 +10,12 @@ import com.openclassrooms.mddapi.dto.Topics.TopicListDto;
 import com.openclassrooms.mddapi.dto.Topics.TopicSubscribingResponseDto;
 import com.openclassrooms.mddapi.exceptions.BadRequestException;
 import com.openclassrooms.mddapi.exceptions.NotFoundException;
+import com.openclassrooms.mddapi.mapper.TopicMapper;
 import com.openclassrooms.mddapi.models.Topic;
 import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repository.TopicRepository;
 import com.openclassrooms.mddapi.repository.UserRepository;
+import com.openclassrooms.mddapi.services.Auth.AuthenticationService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,17 +23,25 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TopicService {
 
-    private TopicRepository topicRepository;
-    private UserRepository userRepository;
+    private final AuthenticationService authenticationService;
+    private final TopicRepository topicRepository;
+    private final UserRepository userRepository;
+    private final TopicMapper topicMapper;
 
-    public TopicService(TopicRepository topicRepository, UserRepository userRepository) {
+    public TopicService(TopicMapper topicMapper, AuthenticationService authenticationService,
+            TopicRepository topicRepository,
+            UserRepository userRepository) {
         this.topicRepository = topicRepository;
         this.userRepository = userRepository;
+        this.authenticationService = authenticationService;
+        this.topicMapper = topicMapper;
     }
 
     // subscribe to a topic
-    public TopicSubscribingResponseDto subscribeTopic(Integer id, Integer topic_id) {
-        User user = this.userRepository.findById(id).orElse(null);
+    public TopicSubscribingResponseDto subscribeTopic(Integer topic_id) {
+        Integer userId = authenticationService.getAuthenticatedUser().getId();
+
+        User user = this.userRepository.findById(userId).orElse(null);
         Topic topic = this.topicRepository.findById(topic_id).orElse(null);
 
         if (user == null || topic == null) {
@@ -50,8 +61,10 @@ public class TopicService {
     }
 
     // unsubscribe to a topic
-    public TopicSubscribingResponseDto unsubscribeTopic(Integer id, Integer topic_id) {
-        User user = this.userRepository.findById(id).orElse(null);
+    public TopicSubscribingResponseDto unsubscribeTopic(Integer topic_id) {
+        Integer userId = authenticationService.getAuthenticatedUser().getId();
+
+        User user = this.userRepository.findById(userId).orElse(null);
         Topic topic = this.topicRepository.findById(topic_id).orElse(null);
 
         if (user == null || topic == null) {
@@ -71,8 +84,10 @@ public class TopicService {
     }
 
     // get all topics subscribed by a user
-    public TopicListDto retrieveUserTopics(Integer id) {
-        User user = this.userRepository.findById(id).orElse(null);
+    public TopicListDto retrieveUserTopics() {
+        Integer userId = authenticationService.getAuthenticatedUser().getId();
+
+        User user = this.userRepository.findById(userId).orElse(null);
         if (user == null) {
             throw new NotFoundException("User not found");
         }
@@ -84,19 +99,14 @@ public class TopicService {
     }
 
     // get all topics
-    public TopicListDto getAllTopics() {
-        var topicList = new TopicListDto();
+    public List<Topic> getAllTopics() {
         var allTopics = topicRepository.findAll();
-        var allTopicsDto = allTopics.stream().map(this::topicToDto).collect(Collectors.toList());
-        topicList.setTopics(allTopicsDto);
-        return topicList;
+        return allTopics;
     }
 
     // map a topic in a Dto
     private TopicDto topicToDto(Topic topic) {
-        TopicDto topicDto = new TopicDto();
-        topicDto.setId(topic.getId());
-        topicDto.setName(topic.getName());
+        TopicDto topicDto = topicMapper.mapToDto(topic);
         return topicDto;
     }
 

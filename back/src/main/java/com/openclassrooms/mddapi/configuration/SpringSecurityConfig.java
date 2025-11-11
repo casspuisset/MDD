@@ -37,6 +37,8 @@ public class SpringSecurityConfig {
         private static final String[] PUBLIC_PATHS = {
                         "/api/auth/register",
                         "/api/auth/login",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
         };
 
         @Bean

@@ -1,0 +1,51 @@
+<app-nav-bar></app-nav-bar>
+<div class="detail">
+  <section class="details-section">
+    <div class="detail-header">
+      <button class="back-btn" mat-icon-button routerLink="../../feed" aria-label="Retour">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1>{{ article()?.title }}</h1>
+    </div>
+
+    <div class="article-datas">
+      <div class="first-row">
+        <p>{{ article()?.createdAt | date }}</p>
+        <p>{{ article()?.creatorUsername }}</p>
+      </div>
+
+      <p>{{ article()?.topicName }}</p>
+    </div>
+
+    <p class="article-description">{{ article()?.description }}</p>
+  </section>
+
+  <section class="comment-section">
+    <p>Commentaires</p>
+
+    <div class="comment-list">
+      @for (comment of comments(); track comment.id) {
+      <div class="comment-card">
+        <div>
+          {{ comment.userName }}
+        </div>
+        <div class="comment-content">
+          <p>{{ comment.content }}</p>
+        </div>
+      </div>
+      }
+    </div>
+    <div class="new-comment-div">
+      <form class="comment-form" [formGroup]="commentForm" (ngSubmit)="sendMessage()">
+        <textarea
+          class="new-comment"
+          formControlName="comment"
+          placeholder="Écrivez ici votre commentaire"
+        ></textarea>
+        <button class="send" type="submit" [disabled]="commentForm.invalid">
+          <mat-icon>send</mat-icon>
+        </button>
+      </form>
+    </div>
+  </section>
+</div>

@@ -20,10 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserService {
 
-    private UserRepository userRepository;
-    private BCryptPasswordEncoder passwordEncoder;
-
-    private AuthenticationService authenticationService;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final AuthenticationService authenticationService;
 
     public UserService(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository,
             AuthenticationService authenticationService) {
@@ -34,15 +33,15 @@ public class UserService {
 
     // retrieve an user by their id
     public UserDetailsDto getUserById(Integer id) {
-        Optional<User> user = userRepository.findById(id);
+        User user = userRepository.findById(id).orElse(null);
         if (user != null) {
             UserDetailsDto userDetailsDto = new UserDetailsDto();
             userDetailsDto.setId(id);
-            userDetailsDto.setEmail(user.get().getEmail());
-            userDetailsDto.setName(user.get().getName());
-            userDetailsDto.setTopics(user.get().getTopics());
-            userDetailsDto.setCreated_at(user.get().getCreatedAt());
-            userDetailsDto.setUpdated_at(user.get().getUpdatedAt());
+            userDetailsDto.setEmail(user.getEmail());
+            userDetailsDto.setName(user.getName());
+            userDetailsDto.setTopics(user.getTopics());
+            userDetailsDto.setCreated_at(user.getCreatedAt());
+            userDetailsDto.setUpdated_at(user.getUpdatedAt());
             return userDetailsDto;
         } else {
             throw new NotFoundException("User not found");
@@ -63,7 +62,7 @@ public class UserService {
             userDetailsDto.setUpdated_at(user.get().getUpdatedAt());
             return userDetailsDto;
         } else {
-            return null;
+            throw new NotFoundException("User not found");
         }
     }
 
@@ -77,8 +76,8 @@ public class UserService {
         User updatedUser = new User();
         updatedUser.setId(id);
         // username if edit
-        if (UserEditRequestDto.getName() != null) {
-            updatedUser.setName(UserEditRequestDto.getName());
+        if (UserEditRequestDto.getUsername() != null) {
+            updatedUser.setName(UserEditRequestDto.getUsername());
         } else {
             updatedUser.setName(user.getName());
         }

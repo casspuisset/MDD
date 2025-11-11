@@ -1,0 +1,30 @@
+<app-nav-bar></app-nav-bar>
+<div class="dashboard">
+  <section class="profil-section">
+    <h2>Profil utilisateur</h2>
+    <form class="user-form" [formGroup]="userProfile" (ngSubmit)="edit()">
+      <input type="text" formControlName="username" placeholder="{{ user()?.name }}" />
+      <input type="email" formControlName="email" placeholder="{{ user()?.email }}" />
+      <input type="password" formControlName="password" placeholder="Mot de passe" />
+      <button class="submit" type="submit">Sauvegarder</button>
+    </form>
+  </section>
+
+  <h2>Abonnements</h2>
+  <section class="topics-section">
+    @for (topic of user()?.topics; track topic.id) {
+    <div [class.isUnsub]="!isSubscribed(topic.id)">
+      <div class="topic-card">
+        <h3>{{ topic.name }}</h3>
+        <p>{{ topic.description }}</p>
+        <div class="unsub-div">
+          <button class="unsubscribing" type="button" (click)="unsubscribe(topic.id)">
+            Se désabonner
+          </button>
+        </div>
+      </div>
+    </div>
+
+    }
+  </section>
+</div>

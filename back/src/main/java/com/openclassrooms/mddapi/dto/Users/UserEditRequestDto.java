@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class UserEditRequestDto {
 
-    private String name;
+    private String username;
 
     private String email;
 
