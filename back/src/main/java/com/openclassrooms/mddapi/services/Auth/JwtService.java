@@ -11,11 +11,15 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import com.openclassrooms.mddapi.interfaces.JwtServiceInterface;
+
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class JwtService {
+public class JwtService implements JwtServiceInterface {
 
         private JwtEncoder jwtEncoder;
 
@@ -24,7 +28,6 @@ public class JwtService {
 
         }
 
-        // generate a JWT token for the session
         public String generateToken(Authentication authentication) {
 
                 Instant now = Instant.now();
@@ -44,5 +47,25 @@ public class JwtService {
                                 claims);
 
                 return jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
+        }
+
+        public void addAuthCookie(
+                        String token,
+                        HttpServletResponse response) {
+                Cookie authCookie = new Cookie("token", token);
+                authCookie.setMaxAge(24 * 60 * 60);
+                authCookie.setSecure(false);
+                authCookie.setHttpOnly(true);
+                authCookie.setPath("/");
+                response.addCookie(authCookie);
+        }
+
+        public void deleteAuthCookie(HttpServletResponse response) {
+                Cookie authCookie = new Cookie("token", null);
+                authCookie.setMaxAge(0);
+                authCookie.setSecure(false);
+                authCookie.setHttpOnly(true);
+                authCookie.setPath("/");
+                response.addCookie(authCookie);
         }
 }

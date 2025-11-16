@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.mddapi.dto.Topics.TopicListDto;
 import com.openclassrooms.mddapi.dto.Topics.TopicSubscribingResponseDto;
+import com.openclassrooms.mddapi.interfaces.TopicServiceInterface;
 import com.openclassrooms.mddapi.models.Topic;
-import com.openclassrooms.mddapi.services.TopicService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,9 +29,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Tag(name = "Thèmes")
 public class TopicController {
 
-    private final TopicService topicService;
+    private final TopicServiceInterface topicService;
 
-    public TopicController(TopicService topicService) {
+    public TopicController(TopicServiceInterface topicService) {
         this.topicService = topicService;
     }
 

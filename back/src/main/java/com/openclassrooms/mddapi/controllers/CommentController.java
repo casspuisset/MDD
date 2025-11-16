@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.openclassrooms.mddapi.dto.Comments.CommentCreationRequestDto;
 import com.openclassrooms.mddapi.dto.Comments.CommentCreationResponseDto;
 import com.openclassrooms.mddapi.dto.Comments.CommentDto;
-import com.openclassrooms.mddapi.services.CommentService;
+import com.openclassrooms.mddapi.interfaces.CommentServiceInterface;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,9 +30,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Tag(name = "Commentaires")
 public class CommentController {
 
-    private final CommentService commentService;
+    private final CommentServiceInterface commentService;
 
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentServiceInterface commentService) {
         this.commentService = commentService;
     }
 

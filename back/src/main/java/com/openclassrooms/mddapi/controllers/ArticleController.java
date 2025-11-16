@@ -14,7 +14,7 @@ import com.openclassrooms.mddapi.dto.Articles.ArticleDto;
 import com.openclassrooms.mddapi.dto.Articles.ArticlesDto;
 import com.openclassrooms.mddapi.dto.Articles.CreateArticleRequestDto;
 import com.openclassrooms.mddapi.dto.Articles.CreateArticleResponseDto;
-import com.openclassrooms.mddapi.services.ArticleService;
+import com.openclassrooms.mddapi.interfaces.ArticleServiceInterface;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,10 +30,10 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name = "Articles")
 public class ArticleController {
 
-    private final ArticleService articleService;
+    private final ArticleServiceInterface articleService;
 
     public ArticleController(
-            ArticleService articleService) {
+            ArticleServiceInterface articleService) {
         this.articleService = articleService;
     }
 

@@ -1,34 +1,54 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { catchError, take, tap } from 'rxjs';
 import { User } from '../../interfaces/user/user.interface';
+import { AuthService } from '../auth/auth-service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Session {
-  public isLogged = false;
-  public user: User | undefined;
-
-  private isLoggedSubject = new BehaviorSubject<boolean>(this.isLogged);
-
-  public $isLogged(): Observable<boolean> {
-    return this.isLoggedSubject.asObservable();
-  }
+  public isLogged = signal<boolean>(false);
+  public user = signal<User | undefined>(undefined);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   public logIn(user: User): void {
-    this.user = user;
-    this.isLogged = true;
-    this.next();
+    this.user.set(user);
+    this.isLogged.update(() => true);
   }
 
   public logOut(): void {
-    window.localStorage.removeItem('token');
-    this.user = undefined;
-    this.isLogged = false;
-    this.next();
+    this.authService
+      .logout()
+      .pipe(
+        take(1),
+        tap(() => {
+          this.isLogged.update(() => false);
+          this.user.set(undefined);
+        }),
+        catchError((error) => {
+          console.error('Error on logout : ' + error);
+          throw error;
+        })
+      )
+      .subscribe(() => {
+        this.router.navigate(['home']);
+      });
   }
 
-  private next(): void {
-    this.isLoggedSubject.next(this.isLogged);
+  public checkAuth(): void {
+    this.authService
+      .me()
+      .pipe(take(1))
+      .subscribe({
+        next: (user: User) => {
+          this.logIn(user);
+        },
+        error: (error) => {
+          this.isLogged.set(false);
+          console.error(error);
+        },
+      });
   }
 }

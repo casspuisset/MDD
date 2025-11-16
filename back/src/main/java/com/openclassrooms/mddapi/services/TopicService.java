@@ -10,25 +10,26 @@ import com.openclassrooms.mddapi.dto.Topics.TopicListDto;
 import com.openclassrooms.mddapi.dto.Topics.TopicSubscribingResponseDto;
 import com.openclassrooms.mddapi.exceptions.BadRequestException;
 import com.openclassrooms.mddapi.exceptions.NotFoundException;
+import com.openclassrooms.mddapi.interfaces.AuthenticationServiceInterface;
+import com.openclassrooms.mddapi.interfaces.TopicServiceInterface;
 import com.openclassrooms.mddapi.mapper.TopicMapper;
 import com.openclassrooms.mddapi.models.Topic;
 import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repository.TopicRepository;
 import com.openclassrooms.mddapi.repository.UserRepository;
-import com.openclassrooms.mddapi.services.Auth.AuthenticationService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class TopicService {
+public class TopicService implements TopicServiceInterface {
 
-    private final AuthenticationService authenticationService;
+    private final AuthenticationServiceInterface authenticationService;
     private final TopicRepository topicRepository;
     private final UserRepository userRepository;
     private final TopicMapper topicMapper;
 
-    public TopicService(TopicMapper topicMapper, AuthenticationService authenticationService,
+    public TopicService(TopicMapper topicMapper, AuthenticationServiceInterface authenticationService,
             TopicRepository topicRepository,
             UserRepository userRepository) {
         this.topicRepository = topicRepository;
@@ -105,7 +106,7 @@ public class TopicService {
     }
 
     // map a topic in a Dto
-    private TopicDto topicToDto(Topic topic) {
+    public TopicDto topicToDto(Topic topic) {
         TopicDto topicDto = topicMapper.mapToDto(topic);
         return topicDto;
     }

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.openclassrooms.mddapi.dto.Users.UserDetailsDto;
 import com.openclassrooms.mddapi.dto.Users.UserEditRequestDto;
 import com.openclassrooms.mddapi.dto.Users.UserEditResponseDto;
-import com.openclassrooms.mddapi.services.UserService;
+import com.openclassrooms.mddapi.interfaces.UserServiceInterface;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Tag(name = "Utilisateurs")
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceInterface userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserServiceInterface userService) {
         this.userService = userService;
     }
 

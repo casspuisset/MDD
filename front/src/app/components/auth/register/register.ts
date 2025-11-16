@@ -10,6 +10,7 @@ import { MatIconButton } from '@angular/material/button';
 import { NavBar } from '../../nav-bar/nav-bar';
 import { CustomValidator } from '../../../services/validators/custom-validator';
 import { User } from '../../../interfaces/user/user.interface';
+import { catchError, take, tap } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -32,23 +33,28 @@ export class Register {
   });
 
   public registerErrors = signal<string>('');
-  //create a new user account when form is valid, and connect them with a new token
+
+  /**
+   * create a new user account when form is valid, and update status in session's service
+   */
   public submit(): void {
     const registerRequest = this.form.value as RegisterRequest;
-    this.authService.register(registerRequest).subscribe({
-      next: (response: AuthSuccess) => {
-        localStorage.setItem('token', response.token);
-        this.authService.me().subscribe((user: User) => {
-          this.session.logIn(user);
-          this.router.navigate(['/feed']);
-        });
-        this.router.navigate(['/feed']);
-      },
-      error: (error) => {
+    this.authService.register(registerRequest).pipe(
+      tap(() => {
+        this.authService
+          .me()
+          .pipe(take(1))
+          .subscribe((user: User) => {
+            this.session.logIn(user);
+            this.router.navigate(['feed']);
+          });
+      }),
+      catchError((error) => {
+        console.log(error);
         this.registerErrors.set(error.error);
-        console.error(error);
-      },
-    });
+        throw error;
+      })
+    );
   }
 
   isError() {

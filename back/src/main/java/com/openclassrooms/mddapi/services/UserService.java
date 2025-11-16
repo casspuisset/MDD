@@ -10,22 +10,23 @@ import com.openclassrooms.mddapi.dto.Users.UserDetailsDto;
 import com.openclassrooms.mddapi.dto.Users.UserEditRequestDto;
 import com.openclassrooms.mddapi.dto.Users.UserEditResponseDto;
 import com.openclassrooms.mddapi.exceptions.NotFoundException;
+import com.openclassrooms.mddapi.interfaces.AuthenticationServiceInterface;
+import com.openclassrooms.mddapi.interfaces.UserServiceInterface;
 import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repository.UserRepository;
-import com.openclassrooms.mddapi.services.Auth.AuthenticationService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class UserService {
+public class UserService implements UserServiceInterface {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final AuthenticationService authenticationService;
+    private final AuthenticationServiceInterface authenticationService;
 
     public UserService(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository,
-            AuthenticationService authenticationService) {
+            AuthenticationServiceInterface authenticationService) {
         this.userRepository = userRepository;
         this.authenticationService = authenticationService;
         this.passwordEncoder = passwordEncoder;

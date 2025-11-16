@@ -13,6 +13,8 @@ import com.openclassrooms.mddapi.dto.Articles.ArticlesDto;
 import com.openclassrooms.mddapi.dto.Articles.CreateArticleRequestDto;
 import com.openclassrooms.mddapi.dto.Articles.CreateArticleResponseDto;
 import com.openclassrooms.mddapi.exceptions.NotFoundException;
+import com.openclassrooms.mddapi.interfaces.ArticleServiceInterface;
+import com.openclassrooms.mddapi.interfaces.AuthenticationServiceInterface;
 import com.openclassrooms.mddapi.mapper.ArticleMapper;
 import com.openclassrooms.mddapi.models.Article;
 import com.openclassrooms.mddapi.models.Topic;
@@ -20,23 +22,22 @@ import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repository.ArticleRepository;
 import com.openclassrooms.mddapi.repository.TopicRepository;
 import com.openclassrooms.mddapi.repository.UserRepository;
-import com.openclassrooms.mddapi.services.Auth.AuthenticationService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class ArticleService {
+public class ArticleService implements ArticleServiceInterface {
 
     private final ArticleRepository articleRepository;
-    private final AuthenticationService authenticationService;
+    private final AuthenticationServiceInterface authenticationService;
     private final UserRepository userRepository;
     private final TopicRepository topicRepository;
     private final ArticleMapper articleMapper;
 
     public ArticleService(TopicRepository topicRepository, UserRepository userRepository,
             ArticleRepository articleRepository,
-            AuthenticationService authenticationService, ArticleMapper articleMapper) {
+            AuthenticationServiceInterface authenticationService, ArticleMapper articleMapper) {
         this.articleRepository = articleRepository;
         this.authenticationService = authenticationService;
         this.userRepository = userRepository;
@@ -104,7 +105,7 @@ public class ArticleService {
     }
 
     // map an article in a Dto
-    private ArticleDto articleToDto(Article article) {
+    public ArticleDto articleToDto(Article article) {
         var user = userRepository.findById(article.getCreatorId()).orElse(null);
         var topic = topicRepository.findById(article.getTopicId()).orElse(null);
         ArticleDto articleDto = articleMapper.mapToDto(article, user, topic);

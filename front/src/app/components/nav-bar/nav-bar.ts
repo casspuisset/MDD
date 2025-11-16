@@ -16,19 +16,19 @@ export class NavBar {
 
   logOut() {
     this.session.logOut();
-    this.router.navigate(['/home']);
+    this.router.navigate(['home']);
   }
 
   toOpen() {
     this.isOpen = true;
   }
   toFeed() {
-    this.router.navigate(['/feed']);
+    this.router.navigate(['feed']);
   }
   toTopics() {
-    this.router.navigate(['/topics']);
+    this.router.navigate(['topics']);
   }
   toUser() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['dashboard']);
   }
 }

@@ -8,6 +8,7 @@ import { TopicsService } from '../../../services/topics/topics-service';
 import { ArticlesService } from '../../../services/articles/articles-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { createArticle } from '../../../interfaces/articles/createArticle.interface';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-create',
@@ -41,14 +42,17 @@ export class Create {
         description: this.createForm.value.description,
         topicId: Number(this.createForm.value.topicId),
       };
-      this.articleService.createArticle(newRequest).subscribe({
-        next: () => {
-          this.router.navigate(['/feed']);
-        },
-        error: (error) => {
-          console.error('Error when submitted:', error);
-        },
-      });
+      this.articleService
+        .createArticle(newRequest)
+        .pipe(take(1))
+        .subscribe({
+          next: () => {
+            this.router.navigate(['feed']);
+          },
+          error: (error) => {
+            console.error('Error when submitted:', error);
+          },
+        });
     } else {
       console.error('Invalid form:', this.createForm.errors);
     }

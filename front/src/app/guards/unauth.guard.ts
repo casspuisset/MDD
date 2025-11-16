@@ -3,14 +3,15 @@ import { CanActivate, Router } from '@angular/router';
 import { Session } from '../services/session/session';
 
 @Injectable({ providedIn: 'root' })
-export class AuthGuard implements CanActivate {
+export class UnauthGuard implements CanActivate {
   private router = inject(Router);
   private session = inject(Session);
 
   public canActivate(): boolean {
-    if (!this.session.isLogged()) {
+    if (this.session.isLogged()) {
       console.log('guard triggered');
-      this.router.navigate(['home']);
+
+      this.router.navigate(['feed']);
       return false;
     }
     return true;

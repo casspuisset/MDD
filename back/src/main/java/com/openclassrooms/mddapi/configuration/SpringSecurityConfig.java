@@ -1,24 +1,31 @@
 package com.openclassrooms.mddapi.configuration;
 
+import java.util.List;
+
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import com.openclassrooms.mddapi.services.Auth.UserDetailsLoader;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +39,9 @@ public class SpringSecurityConfig {
         @org.springframework.beans.factory.annotation.Value("${security.jwt.key}")
         private String jwtKey;
 
-        private final UserDetailsLoader userDetailsLoader;
+        private final UserDetailsService userDetailsLoader;
+
+        private final BearerTokenResolver cookieTokenResolver;
 
         private static final String[] PUBLIC_PATHS = {
                         "/api/auth/register",
@@ -44,6 +53,7 @@ public class SpringSecurityConfig {
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 return http
+                                .cors(Customizer.withDefaults())
                                 .csrf(csrf -> csrf.ignoringRequestMatchers(PUBLIC_PATHS))
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -51,7 +61,8 @@ public class SpringSecurityConfig {
                                                 .requestMatchers(PUBLIC_PATHS).permitAll()
                                                 .anyRequest().authenticated())
                                 .oauth2ResourceServer(oauth2 -> oauth2
-                                                .jwt(jwt -> jwt.decoder(jwtDecoder())))
+                                                .bearerTokenResolver(cookieTokenResolver)
+                                                .jwt(Customizer.withDefaults()))
                                 .build();
         }
 
@@ -87,6 +98,20 @@ public class SpringSecurityConfig {
                                 "RSA");
                 return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
 
+        }
+
+        @Bean
+        CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(List.of("http://localhost:4200",
+                                "http://localhost"));
+                config.setAllowedMethods(
+                                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+                config.setAllowCredentials(true);
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", config);
+                return source;
         }
 
 }

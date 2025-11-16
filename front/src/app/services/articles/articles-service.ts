@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Article } from '../../interfaces/articles/article.interface';
 import { ArticlesResponse } from '../../interfaces/articles/articlesResponse.interface';
 import { createArticle } from '../../interfaces/articles/createArticle.interface';
+import { createArticleResponse } from '../../interfaces/articles/createArticleResponse.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +14,11 @@ export class ArticlesService {
   private http = inject(HttpClient);
 
   public getAllArticles(): Observable<ArticlesResponse> {
-    return this.http.get<any>(this.pathApi);
+    return this.http.get<ArticlesResponse>(this.pathApi);
   }
 
-  public createArticle(createRequest: createArticle): Observable<any> {
-    return this.http.post(`${this.pathApi}/new`, createRequest);
+  public createArticle(createRequest: createArticle): Observable<createArticleResponse> {
+    return this.http.post<createArticleResponse>(`${this.pathApi}/new`, createRequest);
   }
 
   public getArticleById(articleId: number): Observable<Article> {

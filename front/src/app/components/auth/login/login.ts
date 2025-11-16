@@ -9,6 +9,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { NavBar } from '../../nav-bar/nav-bar';
 import { User } from '../../../interfaces/user/user.interface';
+import { catchError, take, tap } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -29,23 +30,30 @@ export class Login {
   });
   public loginErrors = signal<string>('');
 
-  //on login, create a token and set it on localStorage
+  /**
+   * On login, create a token and set it on localStorage
+   */
   public submit(): void {
     const loginRequest = this.form.value as LoginRequest;
-    this.authService.login(loginRequest).subscribe({
-      next: (response: AuthSuccess) => {
-        localStorage.setItem('token', response.token);
-        this.authService.me().subscribe((user: User) => {
-          this.session.logIn(user);
-          this.router.navigate(['/feed']);
-        });
-        this.router.navigate(['/feed']);
-      },
-      error: (error) => {
-        this.loginErrors.update(() => 'error');
-        console.error(error);
-      },
-    });
+    this.authService
+      .login(loginRequest)
+      .pipe(take(1))
+      .subscribe({
+        next: () => {
+          this.authService
+            .me()
+            .pipe(take(1))
+            .subscribe((user: User) => {
+              this.session.logIn(user);
+              this.router.navigate(['feed']);
+            });
+          this.router.navigate(['feed']);
+        },
+        error: (error) => {
+          this.loginErrors.update(() => 'error');
+          console.error(error);
+        },
+      });
   }
 
   isError() {

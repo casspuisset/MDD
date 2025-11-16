@@ -14,14 +14,22 @@ export class AuthService {
   private httpClient = inject(HttpClient);
 
   public register(registerRequest: RegisterRequest): Observable<AuthSuccess> {
-    return this.httpClient.post<AuthSuccess>(`${this.path}/register`, registerRequest);
+    return this.httpClient.post<AuthSuccess>(`${this.path}/register`, registerRequest, {
+      withCredentials: true,
+    });
   }
 
   public login(loginRequest: LoginRequest): Observable<AuthSuccess> {
-    return this.httpClient.post<AuthSuccess>(`${this.path}/login`, loginRequest);
+    return this.httpClient.post<AuthSuccess>(`${this.path}/login`, loginRequest, {
+      withCredentials: true,
+    });
   }
 
   public me(): Observable<User> {
-    return this.httpClient.get<User>(`${this.path}/me`);
+    return this.httpClient.get<User>(`${this.path}/me`, { withCredentials: true });
+  }
+
+  public logout() {
+    return this.httpClient.post(`${this.path}/logout`, null, { withCredentials: true });
   }
 }
