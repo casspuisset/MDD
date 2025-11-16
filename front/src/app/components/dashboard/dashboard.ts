@@ -42,8 +42,10 @@ export class Dashboard {
       .subscribe({
         next: () => {
           console.log('user updated');
-          this.sessionService.checkAuth();
-          this.router.navigate(['feed']);
+          window.alert(
+            'Les identifiants ont été modifiés, vous allez être redirigé vers la page de connexion'
+          );
+          this.sessionService.logOut();
         },
       });
   }
