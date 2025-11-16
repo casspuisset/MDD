@@ -1,15 +1,15 @@
-import { Component, inject, signal } from '@angular/core';
+import { AfterContentInit, Component, inject, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../../services/auth/auth-service';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Session } from '../../../services/session/session';
-import { AuthSuccess } from '../../../interfaces/auth/authSuccess.interface';
 import { RegisterRequest } from '../../../interfaces/auth/registerRequest.interface';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { NavBar } from '../../nav-bar/nav-bar';
 import { CustomValidator } from '../../../services/validators/custom-validator';
 import { User } from '../../../interfaces/user/user.interface';
+import { catchError, take, tap } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -17,13 +17,14 @@ import { User } from '../../../interfaces/user/user.interface';
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
-export class Register {
+export class Register implements OnInit {
   public onError = false;
   private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
   private session = inject(Session);
   private customValidator = inject(CustomValidator);
+  public localUser: User | undefined;
 
   public form = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -32,23 +33,45 @@ export class Register {
   });
 
   public registerErrors = signal<string>('');
-  //create a new user account when form is valid, and connect them with a new token
+
+  /**
+   * verify on init if user is already connected
+   */
+  ngOnInit(): void {
+    this.authService
+      .me()
+      .pipe(take(1))
+      .subscribe({
+        next: (user: User) => {
+          this.localUser = user;
+          if (this.localUser !== undefined) {
+            this.router.navigate(['feed']);
+          }
+        },
+      });
+  }
+
+  /**
+   * create a new user account when form is valid, and update status in session's service
+   */
   public submit(): void {
     const registerRequest = this.form.value as RegisterRequest;
-    this.authService.register(registerRequest).subscribe({
-      next: (response: AuthSuccess) => {
-        localStorage.setItem('token', response.token);
-        this.authService.me().subscribe((user: User) => {
-          this.session.logIn(user);
-          this.router.navigate(['/feed']);
-        });
-        this.router.navigate(['/feed']);
-      },
-      error: (error) => {
+    this.authService.register(registerRequest).pipe(
+      tap(() => {
+        this.authService
+          .me()
+          .pipe(take(1))
+          .subscribe((user: User) => {
+            this.session.logIn(user);
+            this.router.navigate(['feed']);
+          });
+      }),
+      catchError((error) => {
+        console.log(error);
         this.registerErrors.set(error.error);
-        console.error(error);
-      },
-    });
+        throw error;
+      })
+    );
   }
 
   isError() {

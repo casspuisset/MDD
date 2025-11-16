@@ -10,29 +10,30 @@ import com.openclassrooms.mddapi.dto.Comments.CommentCreationRequestDto;
 import com.openclassrooms.mddapi.dto.Comments.CommentCreationResponseDto;
 import com.openclassrooms.mddapi.dto.Comments.CommentDto;
 import com.openclassrooms.mddapi.exceptions.NotFoundException;
+import com.openclassrooms.mddapi.interfaces.AuthenticationServiceInterface;
+import com.openclassrooms.mddapi.interfaces.CommentServiceInterface;
 import com.openclassrooms.mddapi.mapper.CommentMapper;
 import com.openclassrooms.mddapi.models.Comment;
 import com.openclassrooms.mddapi.repository.ArticleRepository;
 import com.openclassrooms.mddapi.repository.CommentRepository;
 import com.openclassrooms.mddapi.repository.UserRepository;
-import com.openclassrooms.mddapi.services.Auth.AuthenticationService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class CommentService {
+public class CommentService implements CommentServiceInterface {
 
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
-    private final AuthenticationService authenticationService;
+    private final AuthenticationServiceInterface authenticationService;
     private final CommentMapper commentMapper;
 
     public CommentService(CommentMapper commentMapper, UserRepository userRepository,
             ArticleRepository articleRepository,
             CommentRepository commentRepository,
-            AuthenticationService authenticationService) {
+            AuthenticationServiceInterface authenticationService) {
         this.articleRepository = articleRepository;
         this.authenticationService = authenticationService;
         this.commentRepository = commentRepository;
@@ -40,7 +41,6 @@ public class CommentService {
         this.commentMapper = commentMapper;
     }
 
-    // create a new comment
     public CommentCreationResponseDto createComment(Integer id, CommentCreationRequestDto comment) {
         var article = articleRepository.findById(id).orElse(null);
 
@@ -62,7 +62,6 @@ public class CommentService {
         return commentResponse;
     }
 
-    // get all comments from an article
     public List<CommentDto> retrieveComments(Integer id) {
         var article = articleRepository.findById(id).orElse(null);
 
@@ -74,8 +73,7 @@ public class CommentService {
         return listCommentDto;
     }
 
-    // map a comment in a Dto
-    private CommentDto commentToDto(Comment comment) {
+    public CommentDto commentToDto(Comment comment) {
         var user = userRepository.findById(comment.getUserId()).orElse(null);
         CommentDto commentDto = commentMapper.mapToDto(user, comment);
         return commentDto;

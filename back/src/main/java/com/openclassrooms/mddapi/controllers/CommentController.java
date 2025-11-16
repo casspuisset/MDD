@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.openclassrooms.mddapi.dto.Comments.CommentCreationRequestDto;
 import com.openclassrooms.mddapi.dto.Comments.CommentCreationResponseDto;
 import com.openclassrooms.mddapi.dto.Comments.CommentDto;
-import com.openclassrooms.mddapi.services.CommentService;
+import com.openclassrooms.mddapi.interfaces.CommentServiceInterface;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,13 +30,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Tag(name = "Commentaires")
 public class CommentController {
 
-    private final CommentService commentService;
+    private final CommentServiceInterface commentService;
 
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentServiceInterface commentService) {
         this.commentService = commentService;
     }
 
-    // create a new compment
+    /**
+     * Create a new comment
+     * 
+     * @param id      id of the article connected to this comment
+     * @param comment message from the comment
+     * @return response for user's information
+     */
     @Operation(description = "Create a new comment", responses = {
             @ApiResponse(description = "Article created", responseCode = "200", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class), examples = @ExampleObject(value = "{\"message\":\"The comment has been successfully send\"}")) }),
@@ -51,7 +57,12 @@ public class CommentController {
         return ResponseEntity.ok().body(commentResponse);
     }
 
-    // get all comments from an article
+    /**
+     * Get all comments from an article
+     * 
+     * @param id of the article connected to these comments
+     * @return a list with all comments connected to this article
+     */
     @Operation(description = "Get all comments from an article", responses = {
             @ApiResponse(description = "Comments retrieved successfully", responseCode = "200"),
             @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),

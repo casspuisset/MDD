@@ -10,28 +10,28 @@ import com.openclassrooms.mddapi.dto.Users.UserDetailsDto;
 import com.openclassrooms.mddapi.dto.Users.UserEditRequestDto;
 import com.openclassrooms.mddapi.dto.Users.UserEditResponseDto;
 import com.openclassrooms.mddapi.exceptions.NotFoundException;
+import com.openclassrooms.mddapi.interfaces.AuthenticationServiceInterface;
+import com.openclassrooms.mddapi.interfaces.UserServiceInterface;
 import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repository.UserRepository;
-import com.openclassrooms.mddapi.services.Auth.AuthenticationService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class UserService {
+public class UserService implements UserServiceInterface {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final AuthenticationService authenticationService;
+    private final AuthenticationServiceInterface authenticationService;
 
     public UserService(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository,
-            AuthenticationService authenticationService) {
+            AuthenticationServiceInterface authenticationService) {
         this.userRepository = userRepository;
         this.authenticationService = authenticationService;
         this.passwordEncoder = passwordEncoder;
     }
 
-    // retrieve an user by their id
     public UserDetailsDto getUserById(Integer id) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
@@ -48,7 +48,6 @@ public class UserService {
         }
     }
 
-    // retrieve user's informations from the database
     public UserDetailsDto getUserDetails() {
 
         Integer id = authenticationService.getAuthenticatedUser().getId();
@@ -66,7 +65,6 @@ public class UserService {
         }
     }
 
-    // edit user informations
     public UserEditResponseDto editUser(UserEditRequestDto UserEditRequestDto) {
         Integer id = authenticationService.getAuthenticatedUser().getId();
         User user = userRepository.findById(id).orElse(null);
@@ -75,19 +73,16 @@ public class UserService {
         }
         User updatedUser = new User();
         updatedUser.setId(id);
-        // username if edit
         if (UserEditRequestDto.getUsername() != null) {
             updatedUser.setName(UserEditRequestDto.getUsername());
         } else {
             updatedUser.setName(user.getName());
         }
-        // email if edit
         if (UserEditRequestDto.getEmail() != null) {
             updatedUser.setEmail(UserEditRequestDto.getEmail());
         } else {
             updatedUser.setEmail(user.getEmail());
         }
-        // password if edit
         if (UserEditRequestDto.getEmail() != null) {
             updatedUser.setPassword(passwordEncoder.encode(UserEditRequestDto.getPassword()));
         } else {

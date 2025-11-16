@@ -1,34 +1,69 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { catchError, take, tap } from 'rxjs';
 import { User } from '../../interfaces/user/user.interface';
+import { AuthService } from '../auth/auth-service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Session {
-  public isLogged = false;
-  public user: User | undefined;
+  public isLogged = signal<boolean>(false);
+  public isLoggedIn: boolean = false;
+  public user = signal<User | undefined>(undefined);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  private isLoggedSubject = new BehaviorSubject<boolean>(this.isLogged);
-
-  public $isLogged(): Observable<boolean> {
-    return this.isLoggedSubject.asObservable();
-  }
-
+  /**
+   * Init datas of the session when user register or logged in manually
+   * @param user user's datas
+   */
   public logIn(user: User): void {
-    this.user = user;
-    this.isLogged = true;
-    this.next();
+    this.user.set(user);
+    this.isLogged.update(() => true);
   }
 
+  /**
+   * Disconnect current user
+   */
   public logOut(): void {
-    window.localStorage.removeItem('token');
-    this.user = undefined;
-    this.isLogged = false;
-    this.next();
+    this.authService
+      .logout()
+      .pipe(
+        take(1),
+        tap(() => {
+          this.isLogged.update(() => false);
+          this.user.set(undefined);
+          this.isLoggedIn = false;
+        }),
+        catchError((error) => {
+          console.error('Error on logout : ' + error);
+          throw error;
+        })
+      )
+      .subscribe(() => {
+        this.router.navigate(['home']);
+      });
   }
 
-  private next(): void {
-    this.isLoggedSubject.next(this.isLogged);
+  /**
+   * Verify if user is currently connected
+   */
+  public checkAuth(): void {
+    this.authService
+      .me()
+      .pipe(take(1))
+      .subscribe({
+        next: (user: User) => {
+          this.user.set(user);
+          this.isLogged.set(true);
+          this.isLoggedIn = true;
+        },
+        error: (error) => {
+          this.isLogged.set(false);
+          this.isLoggedIn = false;
+          console.error(error);
+        },
+      });
   }
 }

@@ -5,8 +5,8 @@ import { Session } from '../../services/session/session';
 import { TopicsService } from '../../services/topics/topics-service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserEditRequest } from '../../interfaces/user/user.edit.interface';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,9 +21,7 @@ export class Dashboard {
   public formBuilder = inject(FormBuilder);
   private router = inject(Router);
 
-  public user = toSignal(this.userService.getById(this.sessionService.user!.id.toString()), {
-    initialValue: null,
-  });
+  public user = this.sessionService.user;
 
   public subcribedTopics = signal<string[]>([]);
 
@@ -33,34 +31,50 @@ export class Dashboard {
     password: [''],
   });
 
-  //edit user account
+  /**
+   * Modification of user's datas
+   */
   public edit(): void {
     const editRequest = this.userProfile.value as UserEditRequest;
-    this.userService.edit(editRequest).subscribe({
-      next: () => {
-        console.log('user updated');
-        this.router.navigate(['/feed']);
-      },
-    });
+    this.userService
+      .edit(editRequest)
+      .pipe(take(1))
+      .subscribe({
+        next: () => {
+          console.log('user updated');
+          this.sessionService.checkAuth();
+          this.router.navigate(['feed']);
+        },
+      });
   }
 
-  //unsubscribe to a topic
+  /**
+   * Function to unsubscribe to a topic
+   * @param topicId id of the unsubscribed topic
+   */
   public unsubscribe(topicId: number): void {
-    this.topicsService.topicUnsubscribe(topicId).subscribe({
-      next: () => {
-        const user = this.user();
-        if (user !== null && user.topics !== undefined) {
-          user.topics = user.topics.filter((topic) => topic.id !== topicId);
-        }
-        this.router.navigate(['/topics']);
-      },
-      error: () => {
-        console.error('An error occured when unsubscribing');
-      },
-    });
+    this.topicsService
+      .topicUnsubscribe(topicId)
+      .pipe(take(1))
+      .subscribe({
+        next: () => {
+          const user = this.user();
+          if (user !== undefined && user.topics !== undefined) {
+            user.topics = user.topics.filter((topic) => topic.id !== topicId);
+          }
+          this.router.navigate(['topics']);
+        },
+        error: () => {
+          console.error('An error occured when unsubscribing');
+        },
+      });
   }
 
-  //check if user is subscribed to a topic
+  /**
+   * Verify for each topic if user is subscribed
+   * @param topicId id of the topic
+   * @returns true if user is subscribed and false if not
+   */
   isSubscribed(topicId: number): boolean {
     return !!this.user()?.topics?.some((topic) => topic.id === topicId);
   }

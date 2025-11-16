@@ -14,7 +14,7 @@ import com.openclassrooms.mddapi.dto.Articles.ArticleDto;
 import com.openclassrooms.mddapi.dto.Articles.ArticlesDto;
 import com.openclassrooms.mddapi.dto.Articles.CreateArticleRequestDto;
 import com.openclassrooms.mddapi.dto.Articles.CreateArticleResponseDto;
-import com.openclassrooms.mddapi.services.ArticleService;
+import com.openclassrooms.mddapi.interfaces.ArticleServiceInterface;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,14 +30,18 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name = "Articles")
 public class ArticleController {
 
-    private final ArticleService articleService;
+    private final ArticleServiceInterface articleService;
 
     public ArticleController(
-            ArticleService articleService) {
+            ArticleServiceInterface articleService) {
         this.articleService = articleService;
     }
 
-    // fetch all articles
+    /**
+     * Fetch all articles from the database
+     * 
+     * @return all articles from database
+     */
     @Operation(description = "Get all articles", responses = {
             @ApiResponse(description = "All articles retrieved successfully", responseCode = "200"),
             @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
@@ -48,7 +52,12 @@ public class ArticleController {
         return ResponseEntity.ok().body(articlesResponseDto);
     }
 
-    // get an article by its id
+    /**
+     * Return an article when id is given and article exists
+     * 
+     * @param id id of requested article
+     * @return the corresponding article or an error if article does not exist
+     */
     @Operation(description = "Get a user by their ID", responses = {
             @ApiResponse(description = "Article fetched successfully", responseCode = "200"),
             @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
@@ -59,7 +68,11 @@ public class ArticleController {
         return ResponseEntity.ok().body(article);
     }
 
-    // fetch articles from user feed
+    /**
+     * Fetch articles for user's feed
+     * 
+     * @return articles from topics subscribed by the user
+     */
     @Operation(description = "Get all articles from the user feed", responses = {
             @ApiResponse(description = "Articles retrieved successfully", responseCode = "200"),
             @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
@@ -71,7 +84,12 @@ public class ArticleController {
         return ResponseEntity.ok().body(articlesResponseDto);
     }
 
-    // create a new article
+    /**
+     * Create a new article
+     * 
+     * @param articleRequestDto datas for the new article given by the user
+     * @return a status response
+     */
     @PostMapping("/new")
     @Operation(description = "Create a new article", responses = {
             @ApiResponse(description = "Article created", responseCode = "200", content = {

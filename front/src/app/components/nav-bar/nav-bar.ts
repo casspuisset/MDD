@@ -14,21 +14,29 @@ export class NavBar {
   private router = inject(Router);
   public isOpen: boolean = false;
 
+  onHome() {
+    if (this.session.isLogged()) {
+      this.router.navigate(['feed']);
+    } else {
+      this.router.navigate(['home']);
+    }
+  }
+
   logOut() {
     this.session.logOut();
-    this.router.navigate(['/home']);
+    this.router.navigate(['home']);
   }
 
   toOpen() {
     this.isOpen = true;
   }
   toFeed() {
-    this.router.navigate(['/feed']);
+    this.router.navigate(['feed']);
   }
   toTopics() {
-    this.router.navigate(['/topics']);
+    this.router.navigate(['topics']);
   }
   toUser() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['dashboard']);
   }
 }

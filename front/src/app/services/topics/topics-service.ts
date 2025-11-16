@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Topic } from '../../interfaces/topic/topic.interface';
+import { TopicSubscribingResponse } from '../../interfaces/topic/topicSubscribingResponse.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -18,11 +19,11 @@ export class TopicsService {
     return this.http.get<Topic[]>(`${this.pathApi}/feed`);
   }
 
-  public topicSubscribe(topicId: number): Observable<any> {
-    return this.http.post<any>(`${this.pathApi}/subscribe/${topicId}`, null);
+  public topicSubscribe(topicId: number): Observable<TopicSubscribingResponse> {
+    return this.http.post<TopicSubscribingResponse>(`${this.pathApi}/subscribe/${topicId}`, null);
   }
 
-  public topicUnsubscribe(topicId: number): Observable<any> {
-    return this.http.delete<any>(`${this.pathApi}/unsubscribe/${topicId}`);
+  public topicUnsubscribe(topicId: number): Observable<TopicSubscribingResponse> {
+    return this.http.delete<TopicSubscribingResponse>(`${this.pathApi}/unsubscribe/${topicId}`);
   }
 }

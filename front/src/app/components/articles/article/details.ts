@@ -10,6 +10,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { DatePipe } from '@angular/common';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-article',
@@ -35,7 +36,6 @@ export class Details {
     comment: ['', [Validators.required, Validators.min(10)]],
   });
 
-  //send a new comment
   public sendMessage(): void {
     if (this.commentForm.value.comment) {
       let newRequest: CommentRequest = {
@@ -44,9 +44,9 @@ export class Details {
       if (this.id !== undefined) {
         this.commentService
           .createComment(this.id, newRequest)
-          .subscribe((commentResponse: CommentResponse) => {
-            console.log(commentResponse.message);
-            this.router.navigate(['/feed']);
+          .pipe(take(1))
+          .subscribe(() => {
+            this.router.navigate(['feed']);
           });
       } else {
         console.error('An error occured : url is not valid');

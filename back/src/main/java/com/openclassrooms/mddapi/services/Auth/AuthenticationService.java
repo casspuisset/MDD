@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.openclassrooms.mddapi.dto.Users.UserDetailsDto;
 import com.openclassrooms.mddapi.exceptions.UnauthorizedException;
+import com.openclassrooms.mddapi.interfaces.AuthenticationServiceInterface;
 import com.openclassrooms.mddapi.mapper.UserMapper;
 import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repository.UserRepository;
@@ -19,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class AuthenticationService {
+public class AuthenticationService implements AuthenticationServiceInterface {
 
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
@@ -32,8 +33,7 @@ public class AuthenticationService {
         this.userMapper = userMapper;
     }
 
-    // get user from the context
-    private Optional<User> getAuthenticatedUserFromContext() {
+    public Optional<User> getAuthenticatedUserFromContext() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             return Optional.of(authentication)
@@ -55,7 +55,6 @@ public class AuthenticationService {
 
     }
 
-    // authenticate the user
     public Authentication tryAuthenticateUser(String email, String password) {
         try {
             Authentication authentication = authenticationManager
@@ -66,8 +65,7 @@ public class AuthenticationService {
         }
     }
 
-    // Map a User in a Dto
-    private UserDetailsDto mapTo(User user) {
+    public UserDetailsDto mapTo(User user) {
         UserDetailsDto userDetailsDto = userMapper.mapToDto(user);
         return userDetailsDto;
     }

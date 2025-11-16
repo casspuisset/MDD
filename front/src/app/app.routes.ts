@@ -8,8 +8,10 @@ import { Dashboard } from './components/dashboard/dashboard';
 import { Topics } from './components/topics/topics';
 import { Create } from './components/articles/create/create';
 import { Details } from './components/articles/article/details';
+import { NotFound } from './components/not-found/not-found';
 
 export const routes: Routes = [
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: Home },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
@@ -18,5 +20,5 @@ export const routes: Routes = [
   { path: 'article/:id', canActivate: [AuthGuard], component: Details },
   { path: 'topics', canActivate: [AuthGuard], component: Topics },
   { path: 'dashboard', canActivate: [AuthGuard], component: Dashboard },
-  { path: '**', redirectTo: 'feed' },
+  { path: '**', component: NotFound },
 ];

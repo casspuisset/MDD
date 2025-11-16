@@ -12,6 +12,11 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 @Configuration
 public class SwaggerConfig {
     @Bean
+    /**
+     * Create documentation for the API
+     * 
+     * @return a documented API on "/swagger-ui/**" and "/v3/api-docs/**"
+     */
     public OpenAPI rentalPortalOpenAPI() {
 
         return new OpenAPI()
