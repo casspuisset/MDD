@@ -56,22 +56,25 @@ export class Register implements OnInit {
    */
   public submit(): void {
     const registerRequest = this.form.value as RegisterRequest;
-    this.authService.register(registerRequest).pipe(
-      tap(() => {
-        this.authService
-          .me()
-          .pipe(take(1))
-          .subscribe((user: User) => {
-            this.session.logIn(user);
-            this.router.navigate(['feed']);
-          });
-      }),
-      catchError((error) => {
-        console.log(error);
-        this.registerErrors.set(error.error);
-        throw error;
-      })
-    );
+    this.authService
+      .register(registerRequest)
+      .pipe(take(1))
+      .subscribe({
+        next: () => {
+          this.authService
+            .me()
+            .pipe(take(1))
+            .subscribe((user: User) => {
+              this.session.logIn(user);
+              this.router.navigate(['feed']);
+            });
+        },
+        error: (error) => {
+          console.log(error);
+          this.registerErrors.set(error.error);
+          throw error;
+        },
+      });
   }
 
   isError() {
