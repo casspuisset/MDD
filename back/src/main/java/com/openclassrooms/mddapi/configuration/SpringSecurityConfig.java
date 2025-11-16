@@ -78,6 +78,11 @@ public class SpringSecurityConfig {
         }
 
         @Bean
+        /**
+         * Hash password for security
+         * 
+         * @return
+         */
         public BCryptPasswordEncoder passwordEncoder() {
 
                 return new BCryptPasswordEncoder();
@@ -85,6 +90,11 @@ public class SpringSecurityConfig {
         }
 
         @Bean
+        /**
+         * Encode token with security key
+         * 
+         * @return encoded token
+         */
         public JwtEncoder jwtEncoder() {
 
                 return new NimbusJwtEncoder(new ImmutableSecret<>(this.jwtKey.getBytes()));
@@ -92,6 +102,11 @@ public class SpringSecurityConfig {
         }
 
         @Bean
+        /**
+         * Decode token with security key
+         * 
+         * @return decoded token
+         */
         public JwtDecoder jwtDecoder() {
 
                 SecretKeySpec secretKey = new SecretKeySpec(this.jwtKey.getBytes(), 0, this.jwtKey.getBytes().length,
@@ -101,6 +116,11 @@ public class SpringSecurityConfig {
         }
 
         @Bean
+        /**
+         * Set configuration for cors-connexion
+         * 
+         * @return
+         */
         CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration config = new CorsConfiguration();
                 config.setAllowedOrigins(List.of("http://localhost:4200",

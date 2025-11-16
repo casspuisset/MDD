@@ -45,7 +45,6 @@ public class ArticleService implements ArticleServiceInterface {
         this.articleMapper = articleMapper;
     }
 
-    // get all articles
     public ArticlesDto getAllArticles() {
         ArticlesDto articles = new ArticlesDto();
         var listArticles = articleRepository.findAll();
@@ -54,7 +53,6 @@ public class ArticleService implements ArticleServiceInterface {
         return articles;
     }
 
-    // get an article by its id
     public ArticleDto getAnArticle(Integer id) {
         Article searchedArticle = articleRepository.findById(id).orElse(null);
         if (searchedArticle == null) {
@@ -64,7 +62,6 @@ public class ArticleService implements ArticleServiceInterface {
         return article;
     }
 
-    // // get articles with topics subscribed by the user
     public List<ArticleDto> getArticlesFromUsersTopics() {
         Integer id = authenticationService.getAuthenticatedUser().getId();
         User user = this.userRepository.findById(id).orElse(null);
@@ -85,7 +82,6 @@ public class ArticleService implements ArticleServiceInterface {
         return articlesList;
     }
 
-    // create a new article
     public CreateArticleResponseDto createArticle(CreateArticleRequestDto request) {
         Article newArticle = new Article();
         Integer id = authenticationService.getAuthenticatedUser().getId();
@@ -104,7 +100,6 @@ public class ArticleService implements ArticleServiceInterface {
         return response;
     }
 
-    // map an article in a Dto
     public ArticleDto articleToDto(Article article) {
         var user = userRepository.findById(article.getCreatorId()).orElse(null);
         var topic = topicRepository.findById(article.getTopicId()).orElse(null);

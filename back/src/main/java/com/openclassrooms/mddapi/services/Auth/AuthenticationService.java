@@ -33,7 +33,6 @@ public class AuthenticationService implements AuthenticationServiceInterface {
         this.userMapper = userMapper;
     }
 
-    // get user from the context
     public Optional<User> getAuthenticatedUserFromContext() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -56,7 +55,6 @@ public class AuthenticationService implements AuthenticationServiceInterface {
 
     }
 
-    // authenticate the user
     public Authentication tryAuthenticateUser(String email, String password) {
         try {
             Authentication authentication = authenticationManager
@@ -67,7 +65,6 @@ public class AuthenticationService implements AuthenticationServiceInterface {
         }
     }
 
-    // Map a User in a Dto
     public UserDetailsDto mapTo(User user) {
         UserDetailsDto userDetailsDto = userMapper.mapToDto(user);
         return userDetailsDto;

@@ -102,28 +102,7 @@ cd ../back
 mvn install
 ```
 
-Then, create a `ressources` folder on `MDD/back/src/main`. Inside, create a file `application.properties` with :
-
-```
-spring.application.name=mddapi
-server.port= 3001
-
-security.jwt.key=<YOUR SECURITY KEY>
-
-spring.h2.console.enabled=true
-
-spring.datasource.url=jdbc:mysql://localhost:3306/mdddb
-spring.datasource.username= <YOUR DATABASE USERNAME>
-spring.datasource.password=<YOUR DATABASE PASSWORD>
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
-
-
-springdoc.swagger-ui.path=/swagger-ui.html
-springdoc.swagger-ui.enabled=true
-```
-
-Don't forget to complete the file with your own passwords and database username.
+In your back, edit `application.properties` with your own secret keys and password.
 
 ## Utilisation
 

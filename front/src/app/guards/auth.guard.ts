@@ -6,10 +6,14 @@ import { Session } from '../services/session/session';
 export class AuthGuard implements CanActivate {
   private router = inject(Router);
   private session = inject(Session);
+  public localUser = this.session.user;
 
+  /**
+   * Verify if user is connected
+   * @returns true or false
+   */
   public canActivate(): boolean {
     if (!this.session.isLogged()) {
-      console.log('guard triggered');
       this.router.navigate(['home']);
       return false;
     }

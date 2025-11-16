@@ -35,7 +35,12 @@ public class TopicController {
         this.topicService = topicService;
     }
 
-    // subscribe to a topic
+    /**
+     * Subscribe the user to a topic
+     * 
+     * @param topic_id id oh the targeted topic
+     * @return a message to inform the user
+     */
     @Operation(description = "Get a user by their ID", responses = {
             @ApiResponse(description = "Successfully subscribe to the topic", responseCode = "200", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class), examples = @ExampleObject(value = "{\"message\":\"Topic subscribed successfully\"}")) }),
@@ -48,7 +53,12 @@ public class TopicController {
         return ResponseEntity.ok().body(subscribeReponse);
     }
 
-    // unsubscribe to a topic
+    /**
+     * Unsubscribe to a topic
+     * 
+     * @param topic_id id of the targeted topic
+     * @return a message to inform the user
+     */
     @Operation(description = "Edit the active user account", responses = {
             @ApiResponse(description = "Successfully unsubscribe to the topic", responseCode = "200", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class), examples = @ExampleObject(value = "{\"message\":\"Topic unsubscribed successfully\"}")) }),
@@ -61,7 +71,11 @@ public class TopicController {
         return ResponseEntity.ok().body(unsubscribeResponse);
     }
 
-    // fetch users topics
+    /**
+     * Retrieve all topics subscribed by the user
+     * 
+     * @return a list of topics
+     */
     @Operation(description = "Get all topics from the user feed", responses = {
             @ApiResponse(description = "Topics retrieved successfully", responseCode = "200"),
             @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
@@ -73,7 +87,11 @@ public class TopicController {
         return ResponseEntity.ok().body(allTopicsResponse);
     }
 
-    // fetch all topics
+    /**
+     * Retrieve all topics from the database
+     * 
+     * @return a list of all topics
+     */
     @Operation(description = "Retrieve all topics from the database", responses = {
             @ApiResponse(description = "All topics retrieved successfully", responseCode = "200"),
             @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),

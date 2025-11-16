@@ -36,7 +36,13 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    // create a new compment
+    /**
+     * Create a new comment
+     * 
+     * @param id      id of the article connected to this comment
+     * @param comment message from the comment
+     * @return response for user's information
+     */
     @Operation(description = "Create a new comment", responses = {
             @ApiResponse(description = "Article created", responseCode = "200", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class), examples = @ExampleObject(value = "{\"message\":\"The comment has been successfully send\"}")) }),
@@ -51,7 +57,12 @@ public class CommentController {
         return ResponseEntity.ok().body(commentResponse);
     }
 
-    // get all comments from an article
+    /**
+     * Get all comments from an article
+     * 
+     * @param id of the article connected to these comments
+     * @return a list with all comments connected to this article
+     */
     @Operation(description = "Get all comments from an article", responses = {
             @ApiResponse(description = "Comments retrieved successfully", responseCode = "200"),
             @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),

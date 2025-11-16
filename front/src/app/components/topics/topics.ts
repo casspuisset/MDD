@@ -14,7 +14,6 @@ import { take } from 'rxjs';
 })
 export class Topics {
   private topicService = inject(TopicsService);
-  private userService = inject(UsersService);
   private sessionService = inject(Session);
   public user = this.sessionService.user;
   public topics = toSignal(this.topicService.getAllTopics(), {
@@ -22,7 +21,10 @@ export class Topics {
   });
   public subcribedTopics = signal<string[]>([]);
 
-  //get all topics
+  /**
+   * Subscribe to a topic
+   * @param topicId id of the target topic
+   */
   subscribe(topicId: number) {
     this.topicService
       .topicSubscribe(topicId)
@@ -35,7 +37,11 @@ export class Topics {
       });
   }
 
-  //verify for each topic if the user is subscribed to it
+  /**
+   * Verify for each topic if user is subscribed
+   * @param topicId
+   * @returns
+   */
   isSubscribed(topicId: number): boolean {
     if (this.subcribedTopics().includes(topicId.toString())) {
       return true;

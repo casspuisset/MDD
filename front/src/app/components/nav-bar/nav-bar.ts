@@ -14,6 +14,14 @@ export class NavBar {
   private router = inject(Router);
   public isOpen: boolean = false;
 
+  onHome() {
+    if (this.session.isLogged()) {
+      this.router.navigate(['feed']);
+    } else {
+      this.router.navigate(['home']);
+    }
+  }
+
   logOut() {
     this.session.logOut();
     this.router.navigate(['home']);

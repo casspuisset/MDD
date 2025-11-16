@@ -18,7 +18,6 @@ public class UserDetailsLoader implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    // retrieve the informations of an user by searching their email in the database
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByEmail(email);
 

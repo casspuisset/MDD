@@ -41,7 +41,6 @@ public class CommentService implements CommentServiceInterface {
         this.commentMapper = commentMapper;
     }
 
-    // create a new comment
     public CommentCreationResponseDto createComment(Integer id, CommentCreationRequestDto comment) {
         var article = articleRepository.findById(id).orElse(null);
 
@@ -63,7 +62,6 @@ public class CommentService implements CommentServiceInterface {
         return commentResponse;
     }
 
-    // get all comments from an article
     public List<CommentDto> retrieveComments(Integer id) {
         var article = articleRepository.findById(id).orElse(null);
 
@@ -75,7 +73,6 @@ public class CommentService implements CommentServiceInterface {
         return listCommentDto;
     }
 
-    // map a comment in a Dto
     public CommentDto commentToDto(Comment comment) {
         var user = userRepository.findById(comment.getUserId()).orElse(null);
         CommentDto commentDto = commentMapper.mapToDto(user, comment);

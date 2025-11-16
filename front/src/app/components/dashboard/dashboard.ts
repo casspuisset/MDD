@@ -31,7 +31,9 @@ export class Dashboard {
     password: [''],
   });
 
-  //edit user account
+  /**
+   * Modification of user's datas
+   */
   public edit(): void {
     const editRequest = this.userProfile.value as UserEditRequest;
     this.userService
@@ -40,12 +42,16 @@ export class Dashboard {
       .subscribe({
         next: () => {
           console.log('user updated');
+          this.sessionService.checkAuth();
           this.router.navigate(['feed']);
         },
       });
   }
 
-  //unsubscribe to a topic
+  /**
+   * Function to unsubscribe to a topic
+   * @param topicId id of the unsubscribed topic
+   */
   public unsubscribe(topicId: number): void {
     this.topicsService
       .topicUnsubscribe(topicId)
@@ -64,7 +70,11 @@ export class Dashboard {
       });
   }
 
-  //check if user is subscribed to a topic
+  /**
+   * Verify for each topic if user is subscribed
+   * @param topicId id of the topic
+   * @returns true if user is subscribed and false if not
+   */
   isSubscribed(topicId: number): boolean {
     return !!this.user()?.topics?.some((topic) => topic.id === topicId);
   }

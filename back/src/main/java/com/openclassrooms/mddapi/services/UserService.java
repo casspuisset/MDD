@@ -32,7 +32,6 @@ public class UserService implements UserServiceInterface {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // retrieve an user by their id
     public UserDetailsDto getUserById(Integer id) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
@@ -49,7 +48,6 @@ public class UserService implements UserServiceInterface {
         }
     }
 
-    // retrieve user's informations from the database
     public UserDetailsDto getUserDetails() {
 
         Integer id = authenticationService.getAuthenticatedUser().getId();
@@ -67,7 +65,6 @@ public class UserService implements UserServiceInterface {
         }
     }
 
-    // edit user informations
     public UserEditResponseDto editUser(UserEditRequestDto UserEditRequestDto) {
         Integer id = authenticationService.getAuthenticatedUser().getId();
         User user = userRepository.findById(id).orElse(null);
@@ -76,19 +73,16 @@ public class UserService implements UserServiceInterface {
         }
         User updatedUser = new User();
         updatedUser.setId(id);
-        // username if edit
         if (UserEditRequestDto.getUsername() != null) {
             updatedUser.setName(UserEditRequestDto.getUsername());
         } else {
             updatedUser.setName(user.getName());
         }
-        // email if edit
         if (UserEditRequestDto.getEmail() != null) {
             updatedUser.setEmail(UserEditRequestDto.getEmail());
         } else {
             updatedUser.setEmail(user.getEmail());
         }
-        // password if edit
         if (UserEditRequestDto.getEmail() != null) {
             updatedUser.setPassword(passwordEncoder.encode(UserEditRequestDto.getPassword()));
         } else {

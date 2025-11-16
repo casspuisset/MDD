@@ -19,23 +19,25 @@ export class Feed implements OnInit {
   private articleService = inject(ArticlesService);
   private sessionService = inject(Session);
   public isSorted: boolean = false;
-
   public user = this.sessionService.user;
 
   articles = signal<Article[]>([]);
 
-  //fetch articles on intitialisation of the component
   ngOnInit(): void {
     this.loadArticle();
   }
 
-  //change the order from the feed
+  /**
+   * Change order of articles in the feed
+   */
   sort() {
     this.isSorted = !this.isSorted;
     this.loadArticle();
   }
 
-  //Get articles from the user's feed
+  /**
+   * Retrieve all articles from user's feed
+   */
   loadArticle() {
     this.articleService
       .getArticlesFromFeed()
@@ -49,7 +51,6 @@ export class Feed implements OnInit {
       });
   }
 
-  //reorder the feed from the oldest to the newest article
   verifyArrayOrder(a: Article, b: Article) {
     if (a.createdAt.toString() < b.createdAt.toString()) {
       return -1;
@@ -60,7 +61,6 @@ export class Feed implements OnInit {
     return 0;
   }
 
-  //reorder the feed from the last to the oldest article
   verifyInverseOrder(a: Article, b: Article) {
     if (a.createdAt.toString() < b.createdAt.toString()) {
       return 1;

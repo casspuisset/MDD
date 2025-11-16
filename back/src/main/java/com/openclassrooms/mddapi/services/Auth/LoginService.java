@@ -41,7 +41,6 @@ public class LoginService implements LoginServiceInterface {
         this.authenticationService = authenticationService;
     }
 
-    // log an user if the email and the password are correct
     public AuthResponseDto login(final AuthRequestDto loginRequestDto, HttpServletResponse response) {
         try {
             String email = "";
@@ -63,7 +62,6 @@ public class LoginService implements LoginServiceInterface {
 
     }
 
-    // create a new user in the database
     public AuthResponseDto register(RegisterRequestDto registerRequestDto, HttpServletResponse response) {
         Optional<User> optionnalUser = userRepository.findByEmail(registerRequestDto.getEmail());
         if (optionnalUser.isPresent()) {
@@ -89,7 +87,6 @@ public class LoginService implements LoginServiceInterface {
         }
     }
 
-    // logout the user
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         jwtService.deleteAuthCookie(response);
         return new ResponseEntity<>(HttpStatus.OK);

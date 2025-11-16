@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { AfterContentChecked, AfterContentInit, Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
 import { Session } from '../../services/session/session';
@@ -13,20 +13,24 @@ import { User } from '../../interfaces/user/user.interface';
   styleUrl: './home.scss',
 })
 export class Home implements OnInit {
-  private session = inject(Session);
   private router = inject(Router);
   private authService = inject(AuthService);
-  private localUser: User | undefined = undefined;
+  private localUser: User | undefined;
+
+  /**
+   * verify on init if user is already connected
+   */
   ngOnInit(): void {
     this.authService
       .me()
       .pipe(take(1))
-      .subscribe((user: User) => (this.localUser = user));
-    if (this.localUser != undefined) {
-      console.log('connecté');
-      this.router.navigate(['feed']);
-    } else {
-      console.log('pas connecté');
-    }
+      .subscribe({
+        next: (user: User) => {
+          this.localUser = user;
+          if (this.localUser !== undefined) {
+            this.router.navigate(['feed']);
+          }
+        },
+      });
   }
 }

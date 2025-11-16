@@ -38,7 +38,6 @@ public class TopicService implements TopicServiceInterface {
         this.topicMapper = topicMapper;
     }
 
-    // subscribe to a topic
     public TopicSubscribingResponseDto subscribeTopic(Integer topic_id) {
         Integer userId = authenticationService.getAuthenticatedUser().getId();
 
@@ -61,7 +60,6 @@ public class TopicService implements TopicServiceInterface {
         return subscribeResponse;
     }
 
-    // unsubscribe to a topic
     public TopicSubscribingResponseDto unsubscribeTopic(Integer topic_id) {
         Integer userId = authenticationService.getAuthenticatedUser().getId();
 
@@ -84,7 +82,6 @@ public class TopicService implements TopicServiceInterface {
         return unsubscribeResponse;
     }
 
-    // get all topics subscribed by a user
     public TopicListDto retrieveUserTopics() {
         Integer userId = authenticationService.getAuthenticatedUser().getId();
 
@@ -99,13 +96,11 @@ public class TopicService implements TopicServiceInterface {
         return topics;
     }
 
-    // get all topics
     public List<Topic> getAllTopics() {
         var allTopics = topicRepository.findAll();
         return allTopics;
     }
 
-    // map a topic in a Dto
     public TopicDto topicToDto(Topic topic) {
         TopicDto topicDto = topicMapper.mapToDto(topic);
         return topicDto;
